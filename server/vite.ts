@@ -79,15 +79,16 @@ export async function setupVite(app: Express, server: Server) {
  * Serve static files in production
  */
 export function serveStatic(app: Express) {
- const distPath = path.resolve(import.meta.dirname, "dist", "client");
+  // __dirname points to dist/ after esbuild
+  const distPath = path.resolve(import.meta.dirname, "client"); // <-- remove extra "dist"
 
   if (!fs.existsSync(distPath)) {
     throw new Error(
-      `Could not find the build directory: ${distPath}. Run "npm run build" in the client first.`
+      `Could not find the build directory: ${distPath}. Run "npm run build" first.`
     );
   }
 
-  // Serve generated images
+  // Serve generated images if they exist
   const generatedImagesPath = path.resolve(import.meta.dirname, "..", "client", "src", "assets", "generated_images");
   if (fs.existsSync(generatedImagesPath)) {
     app.use("/generated_images", express.static(generatedImagesPath));
@@ -95,7 +96,7 @@ export function serveStatic(app: Express) {
 
   app.use(express.static(distPath));
 
-  // fallback to index.html for SPA routing
+  // Fallback to index.html for SPA routing
   app.use("*", (_req: Request, res: Response) => {
     res.sendFile(path.resolve(distPath, "index.html"));
   });
