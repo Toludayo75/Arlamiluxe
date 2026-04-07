@@ -102,7 +102,7 @@ const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 5000; // fixed 
     serveStatic(app); // serve built client
   }
 
-server.listen(port, "localhost", () => {
+server.listen(port, "0.0.0.0", () => {
   log(`Server running on port ${port}`);
 });
 })();
