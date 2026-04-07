@@ -29,7 +29,6 @@ export async function setupVite(app: Express, server: Server) {
     allowedHosts: true as const,
   };
 
-  //  Load client vite.config.ts from disk instead of importing
   const vite: ViteDevServer = await createViteServer({
     configFile: path.resolve(import.meta.dirname, "../client/vite.config.ts"),
     server: serverOptions,
@@ -49,18 +48,17 @@ export async function setupVite(app: Express, server: Server) {
     app.use("/generated_images", express.static(generatedImagesPath));
   }
 
+  // Apply Vite dev middlewares
   app.use(vite.middlewares);
 
-  // catch-all route to serve index.html
+  // Catch-all to serve index.html for SPA routing
   app.use("*", async (req: Request, res: Response, next: NextFunction) => {
     const url = req.originalUrl;
-
     try {
       const clientIndex = path.resolve(import.meta.dirname, "..", "client", "index.html");
-
       let template = await fs.promises.readFile(clientIndex, "utf-8");
 
-      // add cache-busting query param to main.tsx
+      // Cache-busting for main.tsx
       template = template.replace(
         `src="/src/main.tsx"`,
         `src="/src/main.tsx?v=${nanoid()}"`
@@ -79,8 +77,8 @@ export async function setupVite(app: Express, server: Server) {
  * Serve static files in production
  */
 export function serveStatic(app: Express) {
-  // __dirname points to dist/ after esbuild
-  const distPath = path.resolve(import.meta.dirname, "client"); // <-- remove extra "dist"
+  // After esbuild, __dirname = dist/
+  const distPath = path.resolve(import.meta.dirname, "frontend"); // <-- matches build copy
 
   if (!fs.existsSync(distPath)) {
     throw new Error(
@@ -94,10 +92,13 @@ export function serveStatic(app: Express) {
     app.use("/generated_images", express.static(generatedImagesPath));
   }
 
+  // Serve all frontend files
   app.use(express.static(distPath));
 
-  // Fallback to index.html for SPA routing
+  // SPA fallback
   app.use("*", (_req: Request, res: Response) => {
     res.sendFile(path.resolve(distPath, "index.html"));
   });
+
+  log(`Serving frontend from: ${distPath}`);
 }
