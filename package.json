@@ -4,15 +4,20 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
+    // ---------------- DEV ----------------
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "dev:server": "cross-env NODE_ENV=development tsx server/index.ts",
     "dev:client": "npm run dev --prefix client",
 
+    // ---------------- BUILD ----------------
     "build:client": "npm ci --prefix client && npm run build --prefix client",
-    "build:server": "esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist && cp -r client/dist dist/client",
+    "build:server": "esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist && mv dist/client dist/frontend",
     "build": "npm run build:client && npm run build:server",
-   
+
+    // ---------------- START ----------------
     "start": "cross-env NODE_ENV=production node dist/index.js",
+
+    // ---------------- UTILITIES ----------------
     "check": "tsc --noEmit",
     "seed": "tsx -r dotenv/config server/seed.ts",
     "seed-admin": "tsx -r dotenv/config server/seed-admin.ts",
