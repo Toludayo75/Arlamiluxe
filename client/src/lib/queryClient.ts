@@ -1,5 +1,9 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
+// Base URL (empty = same domain in production)
+const BASE_URL = import.meta.env.VITE_API_URL || "";
+
+// Helper: throw error if response is not OK
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
     const text = (await res.text()) || res.statusText;
@@ -7,12 +11,13 @@ async function throwIfResNotOk(res: Response) {
   }
 }
 
+// Generic API request (POST, PUT, DELETE, etc.)
 export async function apiRequest(
   method: string,
   url: string,
-  data?: unknown | undefined,
+  data?: unknown
 ): Promise<Response> {
-  const res = await fetch(url, {
+  const res = await fetch(BASE_URL + url, {
     method,
     headers: data ? { "Content-Type": "application/json" } : {},
     body: data ? JSON.stringify(data) : undefined,
@@ -23,13 +28,17 @@ export async function apiRequest(
   return res;
 }
 
+// Query function for GET requests
 type UnauthorizedBehavior = "returnNull" | "throw";
+
 export const getQueryFn: <T>(options: {
   on401: UnauthorizedBehavior;
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const res = await fetch(queryKey.join("/") as string, {
+    const url = BASE_URL + (queryKey.join("/") as string);
+
+    const res = await fetch(url, {
       credentials: "include",
     });
 
@@ -41,6 +50,7 @@ export const getQueryFn: <T>(options: {
     return await res.json();
   };
 
+// React Query client config
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
