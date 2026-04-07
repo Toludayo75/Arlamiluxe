@@ -1,3 +1,4 @@
+// client/vite.config.ts
 import { defineConfig, type ProxyOptions } from "vite";
 import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
@@ -5,6 +6,7 @@ import path from "path";
 
 const API_PORT = process.env.PORT || "5000";
 
+// Dev proxy only, production ignores this
 const proxy: Record<string, string | ProxyOptions> = {
   "/api": {
     target: `http://localhost:${API_PORT}`,
@@ -24,9 +26,17 @@ const proxy: Record<string, string | ProxyOptions> = {
 };
 
 export default defineConfig({
+  // Use project root for env files
   envDir: path.resolve(__dirname, ".."),
-  base: "./", // ✅ relative paths for production
-  plugins: [react(), tsconfigPaths()],
+
+  // ✅ Key fix: relative paths so assets load in Render
+  base: "./",
+
+  plugins: [
+    react(),
+    tsconfigPaths(), // allows @ path aliases
+  ],
+
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
@@ -34,18 +44,24 @@ export default defineConfig({
       "@shared": path.resolve(__dirname, "../shared"),
     },
   },
+
   server: {
     port: 5173,
     proxy,
   },
+
   build: {
-    outDir: "dist",
+    outDir: "dist", // Vite builds here
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['react', 'react-dom', '@tanstack/react-query'],
-          ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-toast'],
-          utils: ['clsx', 'class-variance-authority', 'lucide-react'],
+          vendor: ["react", "react-dom", "@tanstack/react-query"],
+          ui: [
+            "@radix-ui/react-dialog",
+            "@radix-ui/react-dropdown-menu",
+            "@radix-ui/react-toast",
+          ],
+          utils: ["clsx", "class-variance-authority", "lucide-react"],
         },
       },
     },
