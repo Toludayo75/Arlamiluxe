@@ -8,8 +8,9 @@
     "dev:server": "cross-env NODE_ENV=development tsx server/index.ts",
     "dev:client": "npm run dev --prefix client",
     "build:client": "npm ci --prefix client && npm run build --prefix client",
-    "build:server": "esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist && mv dist/client dist/frontend",
-    "build": "npm run build:client && npm run build:server",
+    "build:server": "esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
+    "postbuild": "cp -r client/dist dist/frontend",
+    "build": "npm run build:client && npm run build:server && npm run postbuild"
     "start": "cross-env NODE_ENV=production node dist/index.js",
     "check": "tsc --noEmit",
     "seed": "tsx -r dotenv/config server/seed.ts",
