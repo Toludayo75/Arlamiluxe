@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
 import path from "path";
 
-const API_PORT = process.env.PORT || "5000"; // fallback if needed
+const API_PORT = process.env.PORT || "5000";
 
 const proxy: Record<string, string | ProxyOptions> = {
   "/api": {
@@ -25,11 +25,8 @@ const proxy: Record<string, string | ProxyOptions> = {
 
 export default defineConfig({
   envDir: path.resolve(__dirname, ".."),
-  base: "./", // <-- ensures relative paths in production
-  plugins: [
-    react(),
-    tsconfigPaths(),
-  ],
+  base: "./", // ✅ relative paths for production
+  plugins: [react(), tsconfigPaths()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
@@ -42,7 +39,7 @@ export default defineConfig({
     proxy,
   },
   build: {
-    outDir: "dist", // default but explicit
+    outDir: "dist",
     rollupOptions: {
       output: {
         manualChunks: {
