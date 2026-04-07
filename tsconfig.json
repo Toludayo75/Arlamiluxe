@@ -1,0 +1,20 @@
+{
+  "include": ["server/**/*", "shared/**/*", "server/seed.ts", "server/seed-admin.ts"],
+  "exclude": ["node_modules", "dist", "build", "**/*.test.ts"],
+  "compilerOptions": {
+    "incremental": true,
+    "tsBuildInfoFile": "./node_modules/typescript/tsbuildinfo",
+    "noEmit": true,
+    "module": "ESNext",
+    "strict": true,
+    "lib": ["esnext", "dom", "dom.iterable"],
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "allowImportingTsExtensions": true,
+    "moduleResolution": "bundler",
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["./shared/*"]
+    }
+  }
+}

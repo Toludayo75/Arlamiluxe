@@ -1,0 +1,22 @@
+    {
+    "include": ["src/**/*"],
+    "exclude": ["node_modules", "dist", "build"],
+    "compilerOptions": {
+        "incremental": true,
+        "tsBuildInfoFile": "./node_modules/typescript/tsbuildinfo",
+        "jsx": "react-jsx",
+        "module": "ESNext",
+        "target": "ESNext",
+        "moduleResolution": "bundler",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "baseUrl": ".",
+        "types": ["vite/client"],
+        "paths": {
+        "@/*": ["./src/*"],
+        "@assets/*": ["./src/assets/*"],
+        "@shared/*": ["../shared/*"]
+        }
+    }
+    }

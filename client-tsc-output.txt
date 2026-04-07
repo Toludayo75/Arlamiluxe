@@ -1,0 +1,38 @@
+client/src/pages/admin/collections.tsx(40,57): error TS2551: Property '_type' does not exist on type 'ZodObject<{ title: ZodType<Buffer, unknown, $ZodTypeInternals<Buffer, unknown>>; description: ZodOptional<ZodNullable<ZodType<Buffer, unknown, $ZodTypeInternals<Buffer, unknown>>>>; imageUrl: ZodOptional<...>; }, "strip">'. Did you mean 'type'?
+client/src/pages/admin/collections.tsx(52,27): error TS2345: Argument of type 'ZodObject<{ title: ZodType<Buffer, unknown, $ZodTypeInternals<Buffer, unknown>>; description: ZodOptional<ZodNullable<ZodType<Buffer, unknown, $ZodTypeInternals<Buffer, unknown>>>>; imageUrl: ZodOptional<...>; }, "strip">' is not assignable to parameter of type 'ZodType<any, any, any>'.
+  Type 'ZodObject<{ title: ZodType<Buffer, unknown, $ZodTypeInternals<Buffer, unknown>>; description: ZodOptional<ZodNullable<ZodType<Buffer, unknown, $ZodTypeInternals<Buffer, unknown>>>>; imageUrl: ZodOptional<...>; }, "strip">' is missing the following properties from type 'ZodType<any, any, any>': _type, _parse, _getType, _getOrReturnCtx, and 7 more.
+client/src/pages/admin/products.tsx(197,54): error TS2322: Type '{ collectionId: string | null | undefined; name: string; price: number; inStock: number; description?: string | null | undefined; imageUrl?: string | null | undefined; imageId?: string | null | undefined; }' is not assignable to type 'Partial<{ name: string; price: number; inStock: number; description?: string | null | undefined; imageUrl?: string | null | undefined; collectionId?: string | undefined; imageId?: string | null | undefined; }>'.
+  Types of property 'collectionId' are incompatible.
+    Type 'string | null | undefined' is not assignable to type 'string | undefined'.
+      Type 'null' is not assignable to type 'string | undefined'.
+client/src/pages/admin/products.tsx(199,29): error TS2345: Argument of type '{ collectionId: string | null | undefined; name: string; price: number; inStock: number; description?: string | null | undefined; imageUrl?: string | null | undefined; imageId?: string | null | undefined; }' is not assignable to parameter of type '{ name: string; price: number; inStock: number; description?: string | null | undefined; imageUrl?: string | null | undefined; collectionId?: string | undefined; imageId?: string | null | undefined; }'.
+  Types of property 'collectionId' are incompatible.
+    Type 'string | null | undefined' is not assignable to type 'string | undefined'.
+      Type 'null' is not assignable to type 'string | undefined'.
+client/src/pages/product-detail.tsx(35,32): error TS2344: Type 'ZodObject<{ productId: ZodOptional<ZodNullable<ZodType<Buffer, unknown, $ZodTypeInternals<Buffer, unknown>>>>; customerName: ZodString; phone: ZodString; email: ZodUnion<...>; message: ZodOptional<...>; }, "strip">' does not satisfy the constraint 'ZodType<any, any, any>'.
+  Type 'ZodObject<{ productId: ZodOptional<ZodNullable<ZodType<Buffer, unknown, $ZodTypeInternals<Buffer, unknown>>>>; customerName: ZodString; phone: ZodString; email: ZodUnion<...>; message: ZodOptional<...>; }, "strip">' is missing the following properties from type 'ZodType<any, any, any>': _type, _parse, _getType, _getOrReturnCtx, and 7 more.
+client/src/pages/product-detail.tsx(46,27): error TS2345: Argument of type 'ZodObject<{ productId: ZodOptional<ZodNullable<ZodType<Buffer, unknown, $ZodTypeInternals<Buffer, unknown>>>>; customerName: ZodString; phone: ZodString; email: ZodUnion<...>; message: ZodOptional<...>; }, "strip">' is not assignable to parameter of type 'ZodType<any, any, any>'.
+  Type 'ZodObject<{ productId: ZodOptional<ZodNullable<ZodType<Buffer, unknown, $ZodTypeInternals<Buffer, unknown>>>>; customerName: ZodString; phone: ZodString; email: ZodUnion<...>; message: ZodOptional<...>; }, "strip">' is missing the following properties from type 'ZodType<any, any, any>': _type, _parse, _getType, _getOrReturnCtx, and 7 more.
+client/src/pages/product-detail.tsx(160,16): error TS18048: 'product' is possibly 'undefined'.
+client/src/pages/product-detail.tsx(162,24): error TS18048: 'product' is possibly 'undefined'.
+client/src/pages/product-detail.tsx(163,24): error TS18048: 'product' is possibly 'undefined'.
+client/src/pages/product-detail.tsx(181,18): error TS18048: 'product' is possibly 'undefined'.
+client/src/pages/product-detail.tsx(188,21): error TS18048: 'product' is possibly 'undefined'.
+client/src/pages/product-detail.tsx(190,18): error TS18048: 'product' is possibly 'undefined'.
+client/src/pages/product-detail.tsx(192,32): error TS18048: 'product' is possibly 'undefined'.
+client/src/pages/product-detail.tsx(202,14): error TS18048: 'product' is possibly 'undefined'.
+client/src/pages/product-detail.tsx(206,20): error TS18048: 'product' is possibly 'undefined'.
+client/src/pages/product-detail.tsx(216,57): error TS18048: 'product' is possibly 'undefined'.
+client/src/pages/product-detail.tsx(217,58): error TS18048: 'product' is possibly 'undefined'.
+client/src/pages/product-detail.tsx(238,30): error TS2322: Type '{ onChange: (...event: any[]) => void; onBlur: Noop; value: unknown; disabled?: boolean | undefined; name: "customerName"; ref: RefCallBack; placeholder: string; "data-testid": string; }' is not assignable to type 'Omit<DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>, "ref">'.
+  Types of property 'value' are incompatible.
+    Type 'unknown' is not assignable to type 'string | number | readonly string[] | undefined'.
+client/src/pages/product-detail.tsx(256,30): error TS2322: Type '{ onChange: (...event: any[]) => void; onBlur: Noop; value: unknown; disabled?: boolean | undefined; name: "phone"; ref: RefCallBack; placeholder: string; "data-testid": string; }' is not assignable to type 'Omit<DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>, "ref">'.
+  Types of property 'value' are incompatible.
+    Type 'unknown' is not assignable to type 'string | number | readonly string[] | undefined'.
+client/src/pages/product-detail.tsx(274,30): error TS2322: Type '{ onChange: (...event: any[]) => void; onBlur: Noop; value: unknown; disabled?: boolean | undefined; name: "email"; ref: RefCallBack; type: "email"; placeholder: string; "data-testid": string; }' is not assignable to type 'Omit<DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>, "ref">'.
+  Types of property 'value' are incompatible.
+    Type 'unknown' is not assignable to type 'string | number | readonly string[] | undefined'.
+client/src/pages/product-detail.tsx(293,30): error TS2322: Type '{ onChange: (...event: any[]) => void; onBlur: Noop; value: unknown; disabled?: boolean | undefined; name: "message"; ref: RefCallBack; placeholder: string; "data-testid": string; }' is not assignable to type 'Omit<DetailedHTMLProps<TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement>, "ref">'.
+  Types of property 'value' are incompatible.
+    Type 'unknown' is not assignable to type 'string | number | readonly string[] | undefined'.

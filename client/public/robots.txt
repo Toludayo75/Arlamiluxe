@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+
+# Block access to admin areas
+Disallow: /admin/
+
+# Block access to API endpoints
+Disallow: /api/
+
+# Block access to development files
+Disallow: /src/
+Disallow: *.map
+
+# Allow crawling of CSS and JS
+Allow: *.css
+Allow: *.js
+
+# Sitemap
+Sitemap: https://arlamiluxe.com/sitemap.xml
