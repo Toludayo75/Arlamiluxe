@@ -25,12 +25,13 @@ const proxy: Record<string, string | ProxyOptions> = {
 
 export default defineConfig({
   envDir: path.resolve(__dirname, ".."),
+  base: "./", // <-- ensures relative paths in production
   plugins: [
     react(),
-    tsconfigPaths(), // <--- add this!
+    tsconfigPaths(),
   ],
   resolve: {
-  alias: {
+    alias: {
       "@": path.resolve(__dirname, "src"),
       "@assets": path.resolve(__dirname, "src/assets"),
       "@shared": path.resolve(__dirname, "../shared"),
@@ -41,6 +42,7 @@ export default defineConfig({
     proxy,
   },
   build: {
+    outDir: "dist", // default but explicit
     rollupOptions: {
       output: {
         manualChunks: {
