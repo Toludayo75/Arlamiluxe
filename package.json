@@ -7,7 +7,7 @@
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "dev:server": "cross-env NODE_ENV=development tsx server/index.ts",
     "dev:client": "npm run dev --prefix client",
-    "build:client": "npm ci --prefix client && npm run build --prefix client",
+    "build:client": "rm -rf client/node_modules client/package-lock.json && npm install --prefix client && npm run build --prefix client",
     "build:server": "esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
     "postbuild": "cp -r client/dist dist/frontend",
     "build": "npm run build:client && npm run build:server && npm run postbuild",
@@ -33,7 +33,6 @@
     "pg": "^8.18.0",
     "redis": "^4.7.1",
     "vite-tsconfig-paths": "^6.1.1",
-    "wouter": "^3.9.0",
     "ws": "^8.18.0"
   },
   "devDependencies": {
