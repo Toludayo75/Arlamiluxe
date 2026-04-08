@@ -285,3 +285,109 @@ Client: Arlamiluxe
 
 Last Updated: (Insert Date)
 
+
+
+```
+Arlamiluxe/
+├── client/                  # React frontend application
+│  ├── index.html               # HTML entry point (Vite)
+│  ├── vite.config.ts           # Vite build configuration
+│  ├── tsconfig.json            # Client-specific TypeScript config
+│  ├── tailwind.config.ts       # Tailwind CSS configuration
+│  ├── postcss.config.js        # PostCSS configuration
+│  ├── package.json             # Client-specific dependencies
+│  │
+│  ├── public/                  # Static assets served as-is
+│  │   ├── robots.txt           # Search engine crawl rules
+│  │   ├── sitemap.xml          # SEO sitemap
+│  │   ├── site.webmanifest     # PWA manifest
+│  │   └── analytics.html       # Analytics snippet
+│  │
+│ └── src/                     # Application source code
+│      ├── main.tsx             # React app entry point
+│      ├── App.tsx              # Root component & router setup
+│      ├── index.css            # Global styles & Tailwind directives
+│      │
+│      ├── pages/               # Route-level page components
+│      │   ├── home.tsx         # Homepage (hero, featured collections, products)
+│      │   ├── products.tsx     # Product catalog with filters
+│      │   ├── product-detail.tsx  # Single product view
+│      │   ├── collections.tsx  # Collections listing page
+│      │   ├── cart.tsx         # Shopping cart page
+│      │   ├── checkout.tsx     # Checkout & payment flow
+│      │   ├── payment-success.tsx  # Post-payment confirmation
+│      │   ├── my-orders.tsx    # Customer order history
+│      │   ├── order-detail.tsx # Single order detail view
+│      │   ├── auth.tsx         # Login / Register page
+      │   ├── about.tsx        # About Us page
+      │   ├── contact.tsx      # Contact page
+      │   ├── not-found.tsx    # 404 page
+      │   │
+      │   └── admin/           # Admin dashboard pages (protected)
+      │       ├── layout.tsx   # Admin shell with sidebar
+      │       ├── dashboard.tsx  # Overview & analytics
+      │       ├── products.tsx   # Product management (CRUD)
+      │       ├── collections.tsx  # Collection management
+      │       ├── orders.tsx     # Order management & status
+      │       ├── shipping.tsx   # Shipping settings
+      │       └── support.tsx    # Customer support / inquiries
+      │
+      ├── components/          # Reusable UI components
+      │   ├── Navigation.tsx   # Fixed top navigation bar
+      │   ├── Hero.tsx         # Homepage hero section
+      │   ├── ProductCard.tsx  # Product card (grid item)
+      │   ├── CollectionCard.tsx  # Collection card (grid item)
+      │   ├── CartDrawer.tsx   # Slide-in cart drawer
+      │   ├── Footer.tsx       # Site-wide footer
+      │   ├── admin-sidebar.tsx  # Admin dashboard sidebar
+      │   │
+      │   ├── ui/              # shadcn/ui primitive components
+      │   │   ├── button.tsx, input.tsx, card.tsx, badge.tsx ...
+      │   │   └── (40+ auto-generated shadcn components)
+      │   │
+      │   └── examples/        # Reference/example component versions
+      │       └── (mirrors of main components for design reference)
+      │
+      ├── hooks/               # Custom React hooks
+      │   ├── use-auth.tsx     # Authentication state & actions
+      │   ├── use-toast.ts     # Toast notification hook
+      │   └── use-mobile.tsx   # Responsive breakpoint detection
+      │
+      ├── lib/                 # Utility & configuration modules
+      │   ├── utils.ts         # General utility functions (cn, formatPrice, etc.)
+      │   ├── queryClient.ts   # TanStack Query client setup
+      │   └── protected-route.tsx  # Auth-guarded route wrapper
+      │
+      └── shared/              # Client-side copy of shared schema
+          └── schema.ts        # Zod/Drizzle types re-exported for client use
+├── 
+server/
+  ├── index.ts             # Server entry point (Express app bootstrap)
+  ├── routes.ts            # All API route definitions
+  ├── auth.ts              # Passport.js authentication setup (local strategy)
+  ├── admin-middleware.ts  # Middleware to protect admin-only routes
+  ├── storage.ts           # Data access layer (DB queries via Drizzle)
+  ├── db.ts                # Drizzle ORM + Neon DB connection setup
+  ├── paystack.ts          # Paystack payment gateway integration
+  ├── vite.ts              # Vite dev server middleware (development only)
+  ├── seed.ts              # Database seeder (products, collections)
+  └── seed-admin.ts        # Admin user seeder
+
+├── shared/                  # Shared types and schema (used by both client & server)
+  └── schema.ts 
+├── migrations/              # Drizzle ORM database migration files
+  ├── 0000_absurd_sister_grimm.sql   # Initial schema migration
+  ├── 0001_fine_cerise.sql           # Subsequent schema update
+  └── meta/
+      ├── _journal.json              # Drizzle migration journal
+      ├── 0000_snapshot.json         # Schema snapshot at migration 0
+      └── 0001_snapshot.json         # Schema snapshot at migration 1
+├── package.json             # Root scripts & dependencies (monorepo)
+├── tsconfig.json            # Root TypeScript configuration
+├── drizzle.config.ts        # Drizzle ORM configuration
+├── components.json          # shadcn/ui component registry config
+├── design_guidelines.md     # Brand & UI design reference
+├── README.md                # Project documentation
+├── .gitignore
+└── ca.pem                   # Database SSL certificate
+```

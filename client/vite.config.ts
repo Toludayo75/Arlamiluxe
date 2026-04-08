@@ -4,37 +4,36 @@ import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
 import path from "path";
 
+// Dev proxy only, production ignores this
 const API_PORT = process.env.PORT || "5000";
 
-// Dev proxy only, production ignores this
 const proxy: Record<string, string | ProxyOptions> = {
   "/api": {
-    target: `http://localhost:${API_PORT}`,
+    target: `http://127.0.0.1:${API_PORT}`,
     changeOrigin: true,
     secure: false,
   },
   "/uploads": {
-    target: `http://localhost:${API_PORT}`,
+    target: `http://127.0.0.1:${API_PORT}`,
     changeOrigin: true,
     secure: false,
   },
   "/generated_images": {
-    target: `http://localhost:${API_PORT}`,
+    target: `http://127.0.0.1:${API_PORT}`,
     changeOrigin: true,
     secure: false,
   },
 };
 
 export default defineConfig({
-  // Use project root for env files
   envDir: path.resolve(__dirname, ".."),
 
-  // ✅ Key fix: relative paths so assets load in Render
-  base: "./",
+  // IMPORTANT: production-ready base path
+  base: "/",
 
   plugins: [
     react(),
-    tsconfigPaths(), // allows @ path aliases
+    tsconfigPaths(),
   ],
 
   resolve: {
@@ -51,7 +50,8 @@ export default defineConfig({
   },
 
   build: {
-    outDir: "dist", // Vite builds here
+    // Output directly to server/public so Express can serve it
+    outDir: "../server/public",
     rollupOptions: {
       output: {
         manualChunks: {

@@ -77,28 +77,27 @@ export async function setupVite(app: Express, server: Server) {
  * Serve static files in production
  */
 export function serveStatic(app: Express) {
-  // After esbuild, __dirname = dist/
-  const distPath = path.resolve(import.meta.dirname, "frontend"); // <-- matches build copy
+  // FIX: Point to server/public, where Vite build outputs
+  const publicPath = path.resolve(import.meta.dirname, "public");
 
-  if (!fs.existsSync(distPath)) {
+  if (!fs.existsSync(publicPath)) {
     throw new Error(
-      `Could not find the build directory: ${distPath}. Run "npm run build" first.`
+      `Could not find the build directory: ${publicPath}. Run "npm run build" first.`
     );
   }
 
   // Serve generated images if they exist
-  const generatedImagesPath = path.resolve(import.meta.dirname, "..", "client", "src", "assets", "generated_images");
+  const generatedImagesPath = path.resolve(publicPath, "generated_images");
   if (fs.existsSync(generatedImagesPath)) {
     app.use("/generated_images", express.static(generatedImagesPath));
   }
 
-  // Serve all frontend files
-  app.use(express.static(distPath));
+  app.use(express.static(publicPath));
 
-  // SPA fallback
+  // SPA fallback for React Router
   app.use("*", (_req: Request, res: Response) => {
-    res.sendFile(path.resolve(distPath, "index.html"));
+    res.sendFile(path.resolve(publicPath, "index.html"));
   });
 
-  log(`Serving frontend from: ${distPath}`);
+  log(`Serving frontend from: ${publicPath}`);
 }
