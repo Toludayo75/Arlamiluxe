@@ -47,8 +47,8 @@ export async function setupVite(app: Express, server: Server) {
 
 /** Serve static files in production */
 export function serveStatic(app: Express) {
-  // FIX: adjust path because server is bundled to dist/
-  const distPath = path.resolve(import.meta.dirname, "../public"); // <-- points to server/public
+  // Use __dirname and go to server/public reliably
+  const distPath = path.resolve(__dirname, "../public"); // from server/dist -> ../public = server/public
 
   if (!fs.existsSync(distPath)) {
     throw new Error(
@@ -56,12 +56,7 @@ export function serveStatic(app: Express) {
     );
   }
 
-  // Serve generated images if they exist
-  const generatedImagesPath = path.resolve(distPath, "generated_images");
-  if (fs.existsSync(generatedImagesPath)) {
-    app.use("/generated_images", express.static(generatedImagesPath));
-  }
-
+  // Serve static files
   app.use(express.static(distPath));
 
   // SPA fallback
@@ -69,5 +64,5 @@ export function serveStatic(app: Express) {
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 
-  log(`Serving frontend from: ${distPath}`);
+  console.log(`[express] Serving frontend from: ${distPath}`);
 }
