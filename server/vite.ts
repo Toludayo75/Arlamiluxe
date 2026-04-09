@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import { createServer as createViteServer, createLogger, type ViteDevServer } from "vite";
 import { type Server } from "http";
+import { fileURLToPath } from "url";
 import { nanoid } from "nanoid";
 
 const viteLogger = createLogger();
@@ -47,6 +48,9 @@ export async function setupVite(app: Express, server: Server) {
 
 /** Serve static files in production */
 export function serveStatic(app: Express) {
+    // Get __dirname equivalent in ES module
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
   // Use __dirname and go to server/public reliably
   const distPath = path.resolve(__dirname, "../public"); // from server/dist -> ../public = server/public
 
