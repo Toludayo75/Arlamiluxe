@@ -1,17 +1,18 @@
 {
-  "include": ["server/**/*", "shared/**/*", "server/seed.ts", "server/seed-admin.ts"],
-  "exclude": ["node_modules", "dist", "build", "**/*.test.ts"],
+  "include": ["server/**/*", "shared/**/*"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts"],
   "compilerOptions": {
-    "incremental": true,
-    "tsBuildInfoFile": "./node_modules/typescript/tsbuildinfo",
-    "noEmit": true,
-    "module": "ESNext",
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+
+    "outDir": "dist",
+    "rootDir": ".",
+
     "strict": true,
-    "lib": ["esnext", "dom", "dom.iterable"],
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "allowImportingTsExtensions": true,
-    "moduleResolution": "bundler",
+
     "baseUrl": ".",
     "paths": {
       "@shared/*": ["./shared/*"]
