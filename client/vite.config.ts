@@ -32,11 +32,7 @@ export default defineConfig({
   // IMPORTANT: production-ready base path
   base: "/",
 
-  plugins: [
-    react(),
-    tsconfigPaths(),
-  ],
-
+  plugins: [react(), tsconfigPaths(),],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
@@ -52,7 +48,8 @@ export default defineConfig({
 
   build: {
     // Output directly to server/public so Express can serve it
-    outDir: "../server/public",
+    outDir: "./dist",
+    emptyOutDir: true,
     rollupOptions: {
       output: {
         manualChunks: {
