@@ -4,7 +4,6 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import { HelmetProvider } from "react-helmet-async";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/hooks/use-auth";
@@ -121,17 +120,15 @@ function AppContent() {
       </main>
       {!isAdminPage && <Footer />}
       {!isAdminPage && showBackToTop && (
-        <Button
+        <button
           type="button"
-          variant="default"
-          size="icon"
           aria-label="Back to top"
           title="Back to top"
-          className="fixed bottom-5 right-5 z-50 h-12 w-12 rounded-full shadow-lg md:hidden"
+          className="fixed bottom-5 right-5 z-50 flex h-12 w-12 items-center justify-center rounded-full border border-primary-border bg-primary text-primary-foreground shadow-lg transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:hidden"
           onClick={() => window.scrollTo({ top: 0, left: 0, behavior: "smooth" })}
         >
           <ArrowUp aria-hidden="true" />
-        </Button>
+        </button>
       )}
     </div>
   );
