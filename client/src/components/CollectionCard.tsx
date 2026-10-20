@@ -8,9 +8,16 @@ interface CollectionCardProps {
   description: string;
   image: string;
   link: string;
+  imageContainerClassName?: string;
 }
 
-export default function CollectionCard({ title, description, image, link }: CollectionCardProps) {
+export default function CollectionCard({
+  title,
+  description,
+  image,
+  link,
+  imageContainerClassName = "aspect-[4/3]",
+}: CollectionCardProps) {
   const [, setLocation] = useLocation();
 
   const handleClick = () => {
@@ -23,7 +30,7 @@ export default function CollectionCard({ title, description, image, link }: Coll
       onClick={handleClick}
       data-testid={`card-collection-${title.toLowerCase().replace(/\s+/g, '-')}`}
     >
-      <div className="relative aspect-[4/3] overflow-hidden">
+      <div className={`relative ${imageContainerClassName} overflow-hidden`}>
         <img
           src={resolveAssetUrl(image)}
           alt={title}

@@ -99,6 +99,7 @@ export default function Home() {
                 description={collection.description || ""}
                 image={collection.imageUrl || ""}
                 link={`/products?collection=${collection.id}`}
+                imageContainerClassName="aspect-square"
               />
             ))}
           </div>

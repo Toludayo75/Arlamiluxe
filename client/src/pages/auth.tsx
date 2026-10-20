@@ -76,7 +76,7 @@ export default function AuthPage() {
     <div className="min-h-screen grid lg:grid-cols-2">
       <div className="flex items-center justify-center p-8 bg-muted/50">
         <div className="w-full max-w-md">
-          <div className="flex items-center justify-center mb-8">
+          <div className="flex items-center justify-center mb-4 sm:mb-8">
             <img src={logoImage} alt="Arlamiluxe" className="h-16 w-16 rounded-full object-cover" />
           </div>
           
