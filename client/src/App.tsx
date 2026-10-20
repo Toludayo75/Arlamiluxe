@@ -1,5 +1,5 @@
 import { Switch, Route, useLocation } from "wouter";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { HelmetProvider } from "react-helmet-async";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -94,6 +94,11 @@ function Router() {
 function AppContent() {
   const [location] = useLocation();
   const isAdminPage = location.startsWith("/admin");
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0 });
+  }, [location]);
+
   return (
     <div className="flex flex-col min-h-screen">
       {!isAdminPage && <Navigation />}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -64,6 +64,15 @@ export default function AdminProducts() {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [uploading, setUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl?.startsWith("blob:")) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
   const { data: products, isLoading: productsLoading } = useQuery<Product[]>({
     queryKey: ["/api/admin/products"],
   });
@@ -89,6 +98,8 @@ export default function AdminProducts() {
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    const previousPreviewUrl = previewUrl || form.getValues("imageUrl") || null;
+    setPreviewUrl(URL.createObjectURL(file));
     const formData = new FormData();
     formData.append("image", file);
     setUploading(true);
@@ -99,23 +110,24 @@ export default function AdminProducts() {
         credentials: "include",
       });
       if (!response.ok) {
-        throw new Error("Upload failed");
+        const errorBody = await response.json().catch(() => null);
+        throw new Error(
+          errorBody?.message || errorBody?.error || `Upload failed (${response.status})`
+        );
       }
       const data = await response.json();
-      console.log("Upload response:", data);
-      // Store the actual image URL in the form so it gets sent with the product
       form.setValue("imageUrl", data.imageUrl);
       if (data.imageId) form.setValue("imageId", data.imageId);
-      setPreviewUrl(data.imageUrl || null);
       toast({
         title: "Success",
         description: "Image uploaded successfully",
       });
     } catch (error) {
+      setPreviewUrl(previousPreviewUrl);
       console.error("Upload error:", error);
       toast({
         title: "Error",
-        description: "Failed to upload image",
+        description: error instanceof Error ? error.message : "Failed to upload image",
         variant: "destructive",
       });
     } finally {

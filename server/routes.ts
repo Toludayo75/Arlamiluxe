@@ -80,6 +80,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       supabase = createClient(supabaseUrl, supabaseSecretKey, {
         auth: { autoRefreshToken: false, persistSession: false },
       });
+      const { data: bucketInfo, error: bucketError } = await supabase.storage.getBucket(bucket);
+      if (bucketError) throw bucketError;
+      if (!bucketInfo.public) {
+        throw new Error("The Supabase Storage bucket must be public to serve product images.");
+      }
+
       objectPath = `products/${randomUUID()}.${imageExtensions[req.file.mimetype]}`;
 
       const { error: uploadError } = await supabase.storage
@@ -113,7 +119,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       console.error("Image upload failed:", error);
-      res.status(500).json({ error: "Upload failed" });
+      res.status(500).json({
+        error: "Upload failed",
+        message: error instanceof Error ? error.message : "Unexpected image storage error",
+      });
     }
   });
   app.get("/api/collections", async (req, res) => {

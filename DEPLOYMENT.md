@@ -22,12 +22,12 @@ that contains the Arlamiluxe schema and data.
 4. After the service is live, verify `https://<your-render-service>.onrender.com/health`
    returns `{"status":"ok"}` and copy the service origin for Netlify.
 
-Create a **public** bucket in Supabase Storage with the exact name set in
-`SUPABASE_STORAGE_BUCKET`. The API uses the secret key to upload images to that
-bucket; the frontend displays the resulting public URLs. Keep the secret key
-only in Render and your local untracked `.env`; never add it to Netlify or a
-`VITE_*` variable. The publishable key is not needed for this server-side upload
-flow.
+Create a **public** bucket in the Supabase project identified by `SUPABASE_URL`,
+with the exact name set in `SUPABASE_STORAGE_BUCKET`. The API uses the secret key
+to upload images to that bucket; the frontend displays the resulting public URLs.
+Keep the secret key only in Render and your local untracked `.env`; never add it
+to Netlify or a `VITE_*` variable. The publishable key is not needed for this
+server-side upload flow.
 
 The Blueprint uses Render's free web-service plan, which can sleep. Image files
 are stored in Supabase Storage, not the Render filesystem. The session store is
