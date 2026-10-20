@@ -1,8 +1,10 @@
 import { Switch, Route, useLocation } from "wouter";
-import { lazy, Suspense, useEffect } from "react";
+import { ArrowUp } from "lucide-react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { HelmetProvider } from "react-helmet-async";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/hooks/use-auth";
@@ -94,10 +96,22 @@ function Router() {
 function AppContent() {
   const [location] = useLocation();
   const isAdminPage = location.startsWith("/admin");
+  const [showBackToTop, setShowBackToTop] = useState(false);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0 });
+    setShowBackToTop(false);
   }, [location]);
+
+  useEffect(() => {
+    const updateScrollPosition = () => {
+      setShowBackToTop(window.scrollY > 300);
+    };
+
+    window.addEventListener("scroll", updateScrollPosition, { passive: true });
+    updateScrollPosition();
+    return () => window.removeEventListener("scroll", updateScrollPosition);
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -106,6 +120,19 @@ function AppContent() {
         <Router />
       </main>
       {!isAdminPage && <Footer />}
+      {!isAdminPage && showBackToTop && (
+        <Button
+          type="button"
+          variant="default"
+          size="icon"
+          aria-label="Back to top"
+          title="Back to top"
+          className="fixed bottom-5 right-5 z-50 h-12 w-12 rounded-full shadow-lg md:hidden"
+          onClick={() => window.scrollTo({ top: 0, left: 0, behavior: "smooth" })}
+        >
+          <ArrowUp aria-hidden="true" />
+        </Button>
+      )}
     </div>
   );
 }
