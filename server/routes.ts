@@ -1,13 +1,15 @@
 import type { Express } from "express";
 import express from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
-import { setupAuth } from "./auth";
-import { requireAdmin } from "./admin-middleware";
-import { initializePaystackTransaction, verifyPaystackTransaction, verifyPaystackWebhookSignature } from "./paystack.ts";
+import { storage } from "./storage.js";
+import { setupAuth } from "./auth.js";
+import { requireAdmin } from "./admin-middleware.js";
+import { initializePaystackTransaction, verifyPaystackTransaction, verifyPaystackWebhookSignature } from "./paystack.js";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import { randomUUID } from "crypto";
+import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import {
   insertCollectionSchema,
@@ -18,28 +20,18 @@ import {
   insertShippingRateSchema,
   type InsertOrderItem,
   type InsertShippingRate,
-} from "@shared/schema";
+} from "../shared/schema.js";
 
-// Configure multer for image uploads
-const storage_multer = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const uploadDir = path.join(process.cwd(), "uploads");
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    cb(null, uploadDir);
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  },
-});
+const imageExtensions: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+};
 
-const upload = multer({ 
-  storage: storage_multer,
+const upload = multer({
+  storage: multer.memoryStorage(),
   fileFilter: (req, file, cb) => {
-    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
-    if (allowedTypes.includes(file.mimetype)) {
+    if (Object.hasOwn(imageExtensions, file.mimetype)) {
       cb(null, true);
     } else {
       cb(new Error("Invalid file type. Only JPEG, PNG and WebP are allowed."));
@@ -57,54 +49,70 @@ function getAuthenticatedUserId(req: Express.Request) {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   setupAuth(app);
-  
-  // ensure upload directory exists and configure multer (store locally under uploads/ for temp storage)
-  const uploadDir = path.resolve(import.meta.dirname, "..", "uploads", );
-  if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
-  
-  // Serve uploaded images as static files
-  app.use("/uploads", express.static(uploadDir));
-  
-  // Also serve generated_images for dev/prod
-  const generatedImagesDir = path.resolve(import.meta.dirname, "..", "client", "src", "assets", "generated_images");
+
+  const legacyUploadsDir = path.resolve(process.cwd(), "uploads");
+  if (fs.existsSync(legacyUploadsDir)) {
+    app.use("/uploads", express.static(legacyUploadsDir));
+  }
+
+  const generatedImagesDir = path.resolve(process.cwd(), "client", "src", "assets", "generated_images");
   if (fs.existsSync(generatedImagesDir)) {
     app.use("/generated_images", express.static(generatedImagesDir));
   }
 
-  const storageEngine = multer.diskStorage({
-    destination: uploadDir,
-    filename: (_req, file, cb) => {
-      const ext = path.extname(file.originalname) || "";
-      cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`);
-    },
-  });
-
-  const upload = multer({ storage: storageEngine, limits: { fileSize: 10 * 1024 * 1024 } });
-
-  // image upload endpoint used by admin form
   app.post("/api/admin/upload", requireAdmin, upload.single("image"), async (req, res) => {
-    try {
-      // multer attaches file info to req.file
-      // return a relative path consistent with seeded assets
-      if (!req.file) return res.status(400).json({ error: "No file uploaded" });
-      const filename = req.file.filename;
-      // Determine what to persist as the image `path` in the DB.
-      // - If `ASSETS_BASE_URL` is configured, persist the full public URL.
-      // - Otherwise persist the /uploads/ path so it can be served by the static middleware.
-      // The API will return exactly what is stored in the DB so the frontend uses the DB-provided path.
-      const assetsBase = process.env.ASSETS_BASE_URL ? process.env.ASSETS_BASE_URL.replace(/\/$/, "") : null;
-      const imageUrl = assetsBase ? `${assetsBase}/generated_images/${filename}` : `/uploads/${filename}`;
+    let supabase: ReturnType<typeof createClient> | undefined;
+    let bucket: string | undefined;
+    let objectPath: string | undefined;
 
-      // persist image metadata to database and return its id
-      try {
-        const img = await storage.createImage({ filename, path: imageUrl, mime: req.file.mimetype, size: req.file.size });
-        return res.status(201).json({ imageId: img.id, imageUrl });
-      } catch (err) {
-        // if DB save fails, still return URL but log the error
-        console.error("Failed to save image record:", err);
-        return res.status(201).json({ imageUrl });
+    try {
+      if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+
+      const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+      const supabaseSecretKey = process.env.SUPABASE_SECRET_KEY;
+      bucket = process.env.SUPABASE_STORAGE_BUCKET;
+      if (!supabaseUrl || !supabaseSecretKey || !bucket) {
+        throw new Error(
+          "SUPABASE_URL (or VITE_SUPABASE_URL), SUPABASE_SECRET_KEY, and SUPABASE_STORAGE_BUCKET must be configured."
+        );
       }
+
+      supabase = createClient(supabaseUrl, supabaseSecretKey, {
+        auth: { autoRefreshToken: false, persistSession: false },
+      });
+      objectPath = `products/${randomUUID()}.${imageExtensions[req.file.mimetype]}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from(bucket)
+        .upload(objectPath, req.file.buffer, {
+          cacheControl: "31536000",
+          contentType: req.file.mimetype,
+          upsert: false,
+        });
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage.from(bucket).getPublicUrl(objectPath);
+      const imageUrl = data.publicUrl;
+      const image = await storage.createImage({
+        filename: objectPath,
+        path: imageUrl,
+        mime: req.file.mimetype,
+        size: req.file.size,
+      });
+
+      return res.status(201).json({ imageId: image.id, imageUrl });
     } catch (error) {
+      if (supabase && bucket && objectPath) {
+        try {
+          const { error: cleanupError } = await supabase.storage.from(bucket).remove([objectPath]);
+          if (cleanupError) {
+            console.error("Failed to remove uploaded image after upload processing failed:", cleanupError);
+          }
+        } catch (cleanupError) {
+          console.error("Failed to remove uploaded image after upload processing failed:", cleanupError);
+        }
+      }
+      console.error("Image upload failed:", error);
       res.status(500).json({ error: "Upload failed" });
     }
   });

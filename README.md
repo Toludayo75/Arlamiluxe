@@ -7,6 +7,9 @@ Arlamiluxe is an online fabric brand offering a wide range of unisex fabrics and
 
 This documentation covers the system architecture, technologies, setup process, code structure, and maintenance workflow.
 
+For deployment instructions for Netlify (frontend) and Render (API), see
+[DEPLOYMENT.md](./DEPLOYMENT.md).
+
 2. Project Goals
 
 Showcase premium fabric collections (including Adire).

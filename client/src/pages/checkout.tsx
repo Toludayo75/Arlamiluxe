@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ShoppingBag } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, resolveAssetUrl } from "@/lib/queryClient";
 import type { CartItem, Product, ShippingRate } from "@shared/schema";
 
 type CartItemWithProduct = CartItem & { product?: Product };
@@ -201,7 +201,7 @@ export default function CheckoutPage() {
                   >
                     {item.product?.imageUrl && (
                       <img
-                        src={item.product.imageUrl}
+                        src={resolveAssetUrl(item.product.imageUrl)}
                         alt={item.product.name}
                         className="w-20 h-20 object-cover rounded-md"
                       />

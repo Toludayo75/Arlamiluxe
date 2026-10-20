@@ -8,6 +8,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Product, Collection } from "@shared/schema";
+import { resolveAssetUrl } from "@/lib/queryClient";
 import heroImage from '../assets/generated_images/Adire_hero_background_fabric_34499d84.png';
 
 export default function Home() {
@@ -147,7 +148,7 @@ export default function Home() {
                     <div className="aspect-[4/3] overflow-hidden rounded-t-xl bg-muted">
                       {product.imageUrl ? (
                         <img
-                          src={product.imageUrl}
+                          src={resolveAssetUrl(product.imageUrl)}
                           alt={product.name}
                           className="w-full h-full object-cover"
                           data-testid={`img-product-${product.id}`}

@@ -16,7 +16,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import type { CartItem, Product } from "@shared/schema";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { apiRequest, queryClient, resolveAssetUrl } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -145,7 +145,7 @@ export default function CartDrawer() {
                 >
                   {item.product?.imageUrl && (
                     <img
-                      src={item.product.imageUrl}
+                      src={resolveAssetUrl(item.product.imageUrl)}
                       alt={item.product.name}
                       className="w-20 h-20 object-cover rounded-md"
                     />

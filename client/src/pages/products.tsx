@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Search, Filter, Plus } from "lucide-react";
 import type { Product, Collection } from "@shared/schema";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { API_BASE_URL, apiRequest, queryClient, resolveAssetUrl } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import {
   Select,
@@ -38,7 +38,9 @@ export default function Products() {
       if (searchQuery) {
         params.append("search", searchQuery);
       }
-      const response = await fetch(`/api/products?${params}`);
+      const response = await fetch(`${API_BASE_URL}/api/products?${params}`, {
+        credentials: "include",
+      });
       if (!response.ok) throw new Error("Failed to fetch products");
       return response.json();
     },
@@ -210,12 +212,7 @@ export default function Products() {
                     <div className="aspect-[4/3] overflow-hidden rounded-t-md bg-muted relative">
                       {product.imageUrl ? (
                         <img
-                          src={
-                            // If DB stored a filename (no leading '/' or 'http'), prefix with VITE_ASSETS_BASE_URL
-                            product.imageUrl && !product.imageUrl.startsWith("/") && !product.imageUrl.startsWith("http")
-                              ? `${(import.meta.env.VITE_ASSETS_BASE_URL || "").replace(/\/$/, "")}/generated_images/${product.imageUrl}`
-                              : product.imageUrl
-                          }
+                          src={resolveAssetUrl(product.imageUrl)}
                           alt={product.name}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover/card:scale-105"
                           data-testid={`img-product-${product.id}`}

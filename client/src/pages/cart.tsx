@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { queryClient, apiRequest } from "@/lib/queryClient";
+import { queryClient, apiRequest, resolveAssetUrl } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -185,7 +185,7 @@ export default function Cart() {
                       <div className="w-24 h-24 rounded-md overflow-hidden bg-muted flex-shrink-0 hover-elevate active-elevate-2 cursor-pointer">
                         {item.product?.imageUrl ? (
                           <img
-                            src={item.product.imageUrl}
+                            src={resolveAssetUrl(item.product.imageUrl)}
                             alt={item.product.name}
                             className="w-full h-full object-cover"
                             data-testid={`img-cart-item-${item.id}`}

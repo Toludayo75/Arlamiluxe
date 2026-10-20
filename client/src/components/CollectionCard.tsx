@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
 import { useLocation } from "wouter";
+import { resolveAssetUrl } from "@/lib/queryClient";
 
 interface CollectionCardProps {
   title: string;
@@ -24,7 +25,7 @@ export default function CollectionCard({ title, description, image, link }: Coll
     >
       <div className="relative aspect-[4/3] overflow-hidden">
         <img
-          src={image}
+          src={resolveAssetUrl(image)}
           alt={title}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />

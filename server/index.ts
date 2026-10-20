@@ -4,16 +4,51 @@ import express, { type Request, Response, NextFunction } from "express";
 import path from "path";
 import session from "express-session";
 import MemoryStore from "memorystore";
-import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
+import { registerRoutes } from "./routes.js";
+import { setupVite, serveStatic, log } from "./vite.js";
 
-import { db } from "./db";
+import { db } from "./db.js";
 
 log(`PAYSTACK_SECRET_KEY loaded: ${Boolean(process.env.PAYSTACK_SECRET_KEY)}`);
 log(`PAYSTACK_BASE_URL = ${process.env.PAYSTACK_BASE_URL ?? "https://api.paystack.co"}`);
 
+if (process.env.NODE_ENV === "production" && !process.env.SESSION_SECRET) {
+  throw new Error("SESSION_SECRET must be set in production.");
+}
+
 const app = express();
 const MemStoreSession = MemoryStore(session);
+const frontendOrigins = new Set(
+  (process.env.FRONTEND_URL || "")
+    .split(",")
+    .map((url) => url.trim().replace(/\/$/, ""))
+    .filter(Boolean)
+);
+
+app.use((req, res, next) => {
+  const origin = req.get("Origin");
+
+  if (origin && frontendOrigins.has(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    res.vary("Origin");
+  }
+
+  if (req.method === "OPTIONS") {
+    if (!origin || !frontendOrigins.has(origin)) {
+      return res.status(403).end();
+    }
+    return res.status(204).end();
+  }
+
+  next();
+});
+
+app.get("/health", (_req, res) => {
+  res.status(200).json({ status: "ok" });
+});
 
 // ----- SESSION -----
 app.use(
@@ -26,7 +61,7 @@ app.use(
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
-      sameSite: "lax",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     },
   })
 );
@@ -98,7 +133,7 @@ const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 5000; // fixed 
   // ----- DEV VS PROD -----
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server); // dev HMR + cache-busting
-  } else {
+  } else if (process.env.API_ONLY !== "true") {
     serveStatic(app); // serve built client
   }
 

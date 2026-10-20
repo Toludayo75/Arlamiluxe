@@ -40,7 +40,7 @@ import {
 } from "@/components/ui/select";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { API_BASE_URL, apiRequest, queryClient, resolveAssetUrl } from "@/lib/queryClient";
 import { type Product, type Collection } from "@shared/schema";
 import { z } from "zod";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -93,9 +93,10 @@ export default function AdminProducts() {
     formData.append("image", file);
     setUploading(true);
     try {
-      const response = await fetch("/api/admin/upload", {
+      const response = await fetch(`${API_BASE_URL}/api/admin/upload`, {
         method: "POST",
         body: formData,
+        credentials: "include",
       });
       if (!response.ok) {
         throw new Error("Upload failed");
@@ -362,14 +363,7 @@ export default function AdminProducts() {
                         {((previewUrl || field.value) && (
                           <div className="relative w-20 h-20 rounded-md overflow-hidden border">
                             <img
-                              src={(() => {
-                                const val = previewUrl || field.value || "";
-                                if (!val) return val;
-                                if (!val.startsWith("/") && !val.startsWith("http")) {
-                                  return `${(import.meta.env.VITE_ASSETS_BASE_URL || "").replace(/\/$/, "")}/generated_images/${val}`;
-                                }
-                                return val;
-                              })()}
+                              src={resolveAssetUrl(previewUrl || field.value)}
                               alt="Preview"
                               className="w-full h-full object-cover"
                             />

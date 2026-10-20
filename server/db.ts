@@ -1,7 +1,7 @@
 // db.ts
 import { Pool } from 'pg';
 import { drizzle } from 'drizzle-orm/node-postgres';
-import * as schema from "../shared/schema";
+import * as schema from "../shared/schema.js";
 
 // dotenv is already loaded in index.ts
 if (!process.env.DATABASE_URL) {

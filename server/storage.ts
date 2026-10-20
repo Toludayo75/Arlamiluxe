@@ -26,8 +26,8 @@ import {
   orders,
   orderItems,
   shippingRates,
-} from "@shared/schema";
-import { db } from "./db";
+} from "../shared/schema.js";
+import { db } from "./db.js";
 import { eq, ilike, or, and, isNull } from "drizzle-orm";
 import { randomUUID } from "crypto";
 
@@ -162,7 +162,7 @@ export class DatabaseStorage implements IStorage {
 
     return prods.map((p) => ({
       ...p,
-      imageUrl: p.imageUrl || p.imagePath || undefined,
+      imageUrl: p.imageUrl || p.imagePath || null,
     }));
   }
 
@@ -186,7 +186,7 @@ export class DatabaseStorage implements IStorage {
 
     return prods.map((p) => ({
       ...p,
-      imageUrl: p.imageUrl || p.imagePath || undefined,
+      imageUrl: p.imageUrl || p.imagePath || null,
     }));
   }
 
@@ -287,7 +287,7 @@ export class DatabaseStorage implements IStorage {
 
     return prods.map((p) => ({
       ...p,
-      imageUrl: p.imageUrl || p.imagePath || undefined,
+      imageUrl: p.imageUrl || p.imagePath || null,
     }));
   }
 

@@ -1,6 +1,6 @@
 import "dotenv/config"; 
-import { db } from "./db";
-import { collections, products, shippingRates } from "@shared/schema";
+import { db } from "./db.js";
+import { collections, products, shippingRates } from "../shared/schema.js";
 
 async function seed() {
   console.log("Starting database seed...");

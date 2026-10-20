@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { apiRequest, queryClient, resolveAssetUrl } from "@/lib/queryClient";
 import type { Product } from "@shared/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -159,7 +159,7 @@ export default function ProductDetail() {
             <div className="aspect-square overflow-hidden rounded-lg bg-muted">
               {product.imageUrl ? (
                 <img
-                  src={product.imageUrl}
+                  src={resolveAssetUrl(product.imageUrl)}
                   alt={product.name}
                   className="w-full h-full object-cover"
                   data-testid="img-product"

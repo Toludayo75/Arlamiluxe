@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { resolveAssetUrl } from "@/lib/queryClient";
 
 interface ProductCardProps {
   id: number;
@@ -22,7 +23,7 @@ export default function ProductCard({ id, name, price, collection, image }: Prod
     >
       <div className="relative aspect-square overflow-hidden">
         <img
-          src={image}
+          src={resolveAssetUrl(image)}
           alt={name}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
