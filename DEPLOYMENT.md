@@ -35,8 +35,9 @@ in memory, so a server restart logs users out.
 
 ## 2. Deploy the frontend to Netlify
 
-1. Import the same GitHub repository in Netlify. `netlify.toml` configures the
-   frontend build directory and SPA fallback.
+1. Import the same GitHub repository in Netlify. `netlify.toml` configures a
+   repository-root install (needed because the frontend imports `shared/schema.ts`
+   from outside `client`), the frontend build, and the SPA fallback.
 2. Add this environment variable in **Site configuration → Environment variables**:
    - `VITE_API_URL`: the Render service origin, e.g.
      `https://arlamiluxe-api.onrender.com` (no trailing slash).
