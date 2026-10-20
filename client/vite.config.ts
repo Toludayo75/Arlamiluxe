@@ -50,18 +50,5 @@ export default defineConfig({
     // Output directly to server/public so Express can serve it
     outDir: "./dist",
     emptyOutDir: true,
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ["react", "react-dom", "@tanstack/react-query"],
-          ui: [
-            "@radix-ui/react-dialog",
-            "@radix-ui/react-dropdown-menu",
-            "@radix-ui/react-toast",
-          ],
-          utils: ["clsx", "class-variance-authority", "lucide-react"],
-        },
-      },
-    },
   },
 });
