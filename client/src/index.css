@@ -168,6 +168,18 @@
 }
 
 @layer base {
+  @media (max-width: 639px) {
+    html {
+      font-size: 15px;
+    }
+
+    button[class],
+    [role="button"][class] {
+      min-width: 40px;
+      min-height: 40px;
+    }
+  }
+
   * {
     @apply border-border;
   }
