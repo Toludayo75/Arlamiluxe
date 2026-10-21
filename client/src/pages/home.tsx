@@ -20,6 +20,8 @@ export default function Home() {
     queryKey: ["/api/products"],
   });
 
+  const featuredProducts = products?.filter((product) => product.inStock > 0).slice(0, 3) ?? [];
+
   // Generate structured data for collections and products
   const generateStructuredData = () => {
     const structuredData = {
@@ -121,7 +123,7 @@ export default function Home() {
         </div>
         {productsLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Array.from({ length: 6 }).map((_, i) => (
+            {Array.from({ length: 3 }).map((_, i) => (
               <Card key={i}>
                 <CardHeader className="p-0">
                   <Skeleton className="h-64 w-full rounded-t-xl" />
@@ -137,9 +139,9 @@ export default function Home() {
           <div className="text-center py-12">
             <p className="text-muted-foreground">Failed to load products. Please try again later.</p>
           </div>
-        ) : products && products.length > 0 ? (
+        ) : featuredProducts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {products.slice(0, 6).map((product) => (
+            {featuredProducts.map((product) => (
               <Link key={product.id} href={`/products/${product.id}`}>
                 <Card
                   data-testid={`card-product-${product.id}`}
@@ -200,7 +202,7 @@ export default function Home() {
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-muted-foreground">No products available.</p>
+            <p className="text-muted-foreground">No products are currently in stock.</p>
           </div>
         )}
         <div className="text-center mt-12">
