@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import CartDrawer from "@/components/CartDrawer";
-import logoImage from "@assets/Logo.jpg";
+import logoImage from "@assets/Logo-new.png";
 
 import {
   DropdownMenu,
@@ -49,7 +49,7 @@ export default function Navigation() {
                 href={link.href}
                 className={`text-sm font-medium transition-colors hover:text-primary ${
                   location === link.href
-                    ? "text-primary border-b-2 border-primary pb-1"
+                    ? "text-primary border-b-2 border-brand-accent pb-1"
                     : "text-foreground"
                 }`}
                 data-testid={`link-${link.label.toLowerCase().replace(/\s+/g, '-')}`}
@@ -136,7 +136,9 @@ export default function Navigation() {
                 key={link.href}
                 href={link.href}
                 className={`block text-sm font-medium py-2 ${
-                  location === link.href ? "text-primary" : "text-foreground"
+                  location === link.href
+                    ? "text-primary border-l-2 border-brand-accent pl-2"
+                    : "text-foreground"
                 }`}
                 onClick={() => setMobileMenuOpen(false)}
                 data-testid={`mobile-link-${link.label.toLowerCase().replace(/\s+/g, '-')}`}

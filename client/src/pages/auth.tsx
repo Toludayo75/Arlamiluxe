@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Eye, EyeOff } from "lucide-react";
-import logoImage from "@assets/Logo.jpg";
+import logoImage from "@assets/Logo-new.png";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email"),
@@ -245,14 +245,8 @@ export default function AuthPage() {
         </div>
       </div>
 
-      <div 
-        className="hidden lg:flex items-center justify-center relative bg-cover bg-center"
-        style={{ 
-          backgroundImage: `url(${logoImage})`,
-        }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70" />
-        <div className="relative z-10 text-center text-white px-8 max-w-lg">
+      <div className="hidden lg:flex items-center justify-center bg-secondary">
+        <div className="text-center text-foreground px-8 max-w-lg">
           <h1 className="font-serif text-5xl font-bold mb-4">Arlamiluxe</h1>
           <p className="text-xl mb-6">Where Luxury Meets Cultural Heritage</p>
           <p className="text-muted-foreground">

@@ -59,7 +59,7 @@ export default function PaymentSuccessPage() {
 
   return (
     <div className="min-h-screen bg-muted/50">
-      <div className="bg-primary text-primary-foreground py-12 px-6">
+      <div className="bg-secondary text-secondary-foreground py-12 px-6">
         <div className="container mx-auto max-w-4xl">
           <h1 className="text-4xl font-serif mb-2">Payment Status</h1>
           <p className="text-lg opacity-90">Review your recent transaction.</p>

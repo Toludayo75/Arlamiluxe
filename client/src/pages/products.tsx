@@ -95,7 +95,7 @@ export default function Products() {
       </Helmet>
 
       <div className="min-h-screen">
-        <div className="bg-primary text-primary-foreground py-16 px-6">
+        <div className="bg-secondary text-secondary-foreground py-16 px-6">
           <div className="container mx-auto max-w-6xl">
             <h1 className="text-5xl font-serif mb-4">Premium Nigerian Fabrics Collection</h1>
             <p className="text-lg opacity-90">

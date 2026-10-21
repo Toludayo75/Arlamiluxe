@@ -14,12 +14,12 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-primary text-primary-foreground">
+    <footer className="bg-secondary text-secondary-foreground">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           <div>
             <h3 className="font-serif text-lg font-semibold mb-4">About Arlamiluxe</h3>
-            <p className="text-sm text-primary-foreground/90 leading-relaxed">
+            <p className="text-sm leading-relaxed">
               Premium Nigerian fabrics celebrating cultural heritage and luxury craftsmanship.
             </p>
           </div>
@@ -28,12 +28,12 @@ export default function Footer() {
             <h3 className="font-serif text-lg font-semibold mb-4">Collections</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/products" className="hover:underline" data-testid="link-footer-products">
+                <Link href="/products"                 className="hover:text-brand-accent hover:underline" data-testid="link-footer-products">
                   All Products
                 </Link>
               </li>
               <li>
-                <Link href="/products" className="hover:underline" data-testid="link-footer-fabrics">
+                <Link href="/products" className="hover:text-brand-accent hover:underline" data-testid="link-footer-fabrics">
                   Premium Fabrics
                 </Link>
               </li>
@@ -44,12 +44,12 @@ export default function Footer() {
             <h3 className="font-serif text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/about" className="hover:underline" data-testid="link-footer-about">
+                <Link href="/about" className="hover:text-brand-accent hover:underline" data-testid="link-footer-about">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="hover:underline" data-testid="link-footer-contact">
+                <Link href="/contact" className="hover:text-brand-accent hover:underline" data-testid="link-footer-contact">
                   Contact
                 </Link>
               </li>
@@ -64,12 +64,11 @@ export default function Footer() {
                 placeholder="Your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/60"
+                className="bg-background border-border text-foreground placeholder:text-muted-foreground"
                 data-testid="input-newsletter-email"
               />
               <Button
                 type="submit"
-                variant="secondary"
                 className="w-full"
                 data-testid="button-newsletter-submit"
               >
@@ -79,8 +78,8 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-primary-foreground/20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-primary-foreground/80">
+        <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-sm text-muted-foreground">
             © 2025 Arlamiluxe. All rights reserved.
           </p>
           <div className="flex gap-4">
@@ -91,7 +90,7 @@ export default function Footer() {
               className="hover:opacity-80 transition-opacity"
               data-testid="link-social-facebook"
             >
-              <Button size="icon" variant="ghost" className="text-primary-foreground hover:text-primary-foreground/80">
+              <Button size="icon" variant="ghost" className="hover:text-brand-accent">
                 <Facebook className="w-5 h-5" />
               </Button>
             </a>
@@ -102,7 +101,7 @@ export default function Footer() {
               className="hover:opacity-80 transition-opacity"
               data-testid="link-social-instagram"
             >
-              <Button size="icon" variant="ghost" className="text-primary-foreground hover:text-primary-foreground/80">
+              <Button size="icon" variant="ghost" className="hover:text-brand-accent">
                 <Instagram className="w-5 h-5" />
               </Button>
             </a>
@@ -113,7 +112,7 @@ export default function Footer() {
               className="hover:opacity-80 transition-opacity"
               data-testid="link-social-twitter"
             >
-              <Button size="icon" variant="ghost" className="text-primary-foreground hover:text-primary-foreground/80">
+              <Button size="icon" variant="ghost" className="hover:text-brand-accent">
                 <Twitter className="w-5 h-5" />
               </Button>
             </a>

@@ -63,7 +63,7 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen">
-      <section className="bg-primary text-primary-foreground py-16 px-6">
+      <section className="bg-secondary text-secondary-foreground py-16 px-6">
         <div className="container mx-auto max-w-6xl">
           <h1 className="text-5xl font-serif mb-4" data-testid="text-contact-title">Contact Us</h1>
           <p className="text-lg opacity-90">
