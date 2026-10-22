@@ -55,10 +55,14 @@ export default function CartDrawer() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
     },
-    onError: () => {
+    onError: (error) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/products"] });
       toast({
         title: "Error",
-        description: "Failed to update quantity",
+        description: error.message.startsWith("409:")
+          ? "That quantity exceeds the available stock. Your cart has been refreshed."
+          : "Failed to update quantity",
         variant: "destructive",
       });
     },
@@ -157,6 +161,9 @@ export default function CartDrawer() {
                     <p className="text-sm text-muted-foreground">
                       ₦{(item.product?.price || 0).toLocaleString()}
                     </p>
+                    <p className="text-xs text-muted-foreground">
+                      {item.product?.inStock ?? 0} available
+                    </p>
                     <div className="flex items-center gap-2 mt-2">
                       <Button
                         size="icon"
@@ -186,7 +193,10 @@ export default function CartDrawer() {
                             quantity: item.quantity + 1,
                           })
                         }
-                        disabled={updateQuantityMutation.isPending}
+                        disabled={
+                          updateQuantityMutation.isPending ||
+                          item.quantity >= (item.product?.inStock ?? 0)
+                        }
                         data-testid={`button-increase-${item.id}`}
                       >
                         <Plus className="h-3 w-3" />

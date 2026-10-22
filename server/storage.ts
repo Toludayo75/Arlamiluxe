@@ -31,6 +31,13 @@ import { db } from "./db.js";
 import { eq, ilike, or, and, isNull } from "drizzle-orm";
 import { randomUUID } from "crypto";
 
+export class CartStockError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "CartStockError";
+  }
+}
+
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
@@ -349,33 +356,56 @@ export class DatabaseStorage implements IStorage {
     if (!item.userId && !item.sessionId) {
       throw new Error("Cart item must have either userId or sessionId");
     }
-
-    const whereConditions = [eq(cartItems.productId, item.productId)];
-    if (item.userId) {
-      whereConditions.push(eq(cartItems.userId, item.userId));
-    } else if (item.sessionId) {
-      whereConditions.push(eq(cartItems.sessionId, item.sessionId));
+    const quantity = item.quantity ?? 1;
+    if (!Number.isInteger(quantity) || quantity < 1) {
+      throw new Error("Cart quantity must be a positive integer");
     }
 
-    const [existingItem] = await db
-      .select()
-      .from(cartItems)
-      .where(and(...whereConditions));
+    return db.transaction(async (tx) => {
+      const [product] = await tx
+        .select({ inStock: products.inStock })
+        .from(products)
+        .where(eq(products.id, item.productId))
+        .for("update");
+      if (!product) {
+        throw new CartStockError("This product is no longer available.");
+      }
 
-    if (existingItem) {
-      const [updated] = await db
-        .update(cartItems)
-        .set({ quantity: existingItem.quantity + (item.quantity || 1) })
-        .where(eq(cartItems.id, existingItem.id))
+      const whereConditions = [eq(cartItems.productId, item.productId)];
+      if (item.userId) {
+        whereConditions.push(eq(cartItems.userId, item.userId));
+      } else if (item.sessionId) {
+        whereConditions.push(eq(cartItems.sessionId, item.sessionId));
+      }
+
+      const [existingItem] = await tx
+        .select()
+        .from(cartItems)
+        .where(and(...whereConditions))
+        .limit(1);
+      const requestedQuantity = (existingItem?.quantity ?? 0) + quantity;
+
+      if (product.inStock < requestedQuantity) {
+        throw new CartStockError(
+          `Only ${product.inStock} item${product.inStock === 1 ? "" : "s"} currently in stock.`
+        );
+      }
+
+      if (existingItem) {
+        const [updated] = await tx
+          .update(cartItems)
+          .set({ quantity: requestedQuantity })
+          .where(eq(cartItems.id, existingItem.id))
+          .returning();
+        return updated;
+      }
+
+      const [newItem] = await tx
+        .insert(cartItems)
+        .values({ ...item, quantity })
         .returning();
-      return updated;
-    }
-
-    const [newItem] = await db
-      .insert(cartItems)
-      .values(item)
-      .returning();
-    return newItem;
+      return newItem;
+    });
   }
 
   async updateCartItemQuantity(id: string, quantity: number, userId?: string, sessionId?: string): Promise<CartItem | undefined> {
@@ -391,12 +421,32 @@ export class DatabaseStorage implements IStorage {
       whereConditions.push(eq(cartItems.sessionId, sessionId));
     }
 
-    const [item] = await db
-      .update(cartItems)
-      .set({ quantity })
-      .where(and(...whereConditions))
-      .returning();
-    return item || undefined;
+    return db.transaction(async (tx) => {
+      const [cartItem] = await tx
+        .select()
+        .from(cartItems)
+        .where(and(...whereConditions))
+        .limit(1);
+      if (!cartItem) return undefined;
+
+      const [product] = await tx
+        .select({ inStock: products.inStock })
+        .from(products)
+        .where(eq(products.id, cartItem.productId))
+        .for("update");
+      if (!product || quantity > product.inStock) {
+        throw new CartStockError(
+          `Only ${product?.inStock ?? 0} item${product?.inStock === 1 ? "" : "s"} currently in stock.`
+        );
+      }
+
+      const [updated] = await tx
+        .update(cartItems)
+        .set({ quantity })
+        .where(and(...whereConditions))
+        .returning();
+      return updated || undefined;
+    });
   }
 
   async removeCartItem(id: string, userId?: string, sessionId?: string): Promise<boolean> {

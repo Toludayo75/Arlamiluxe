@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import express from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage.js";
+import { CartStockError, storage } from "./storage.js";
 import { setupAuth } from "./auth.js";
 import { requireAdmin } from "./admin-middleware.js";
 import { initializePaystackTransaction, verifyPaystackTransaction, verifyPaystackWebhookSignature } from "./paystack.js";
@@ -375,6 +375,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     if (!validation.success) {
       return res.status(400).json({ error: "Invalid cart item data", details: validation.error });
     }
+    if (
+      validation.data.quantity !== undefined &&
+      (!Number.isInteger(validation.data.quantity) || validation.data.quantity < 1)
+    ) {
+      return res.status(400).json({ error: "Cart quantity must be a positive integer" });
+    }
 
     try {
       const userId = getAuthenticatedUserId(req);
@@ -393,13 +399,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const item = await storage.addCartItem(itemData);
       res.status(201).json(item);
     } catch (error) {
+      if (error instanceof CartStockError) {
+        return res.status(409).json({ error: error.message });
+      }
       res.status(500).json({ error: "Failed to add cart item" });
     }
   });
 
   app.patch("/api/cart/:id", async (req, res) => {
     const { quantity } = req.body;
-    if (typeof quantity !== 'number' || quantity < 0) {
+    if (typeof quantity !== "number" || !Number.isInteger(quantity) || quantity < 0) {
       return res.status(400).json({ error: "Invalid quantity" });
     }
 
@@ -413,6 +422,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       res.json(item);
     } catch (error) {
+      if (error instanceof CartStockError) {
+        return res.status(409).json({ error: error.message });
+      }
       res.status(500).json({ error: "Failed to update cart item" });
     }
   });

@@ -28,10 +28,14 @@ export default function Cart() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
     },
-    onError: () => {
+    onError: (error) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/products"] });
       toast({
         title: "Error",
-        description: "Failed to update quantity",
+        description: error.message.startsWith("409:")
+          ? "That quantity exceeds the available stock. Your cart has been refreshed."
+          : "Failed to update quantity",
         variant: "destructive",
       });
     },

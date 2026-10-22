@@ -60,10 +60,14 @@ export default function Products() {
         description: "The item has been added to your shopping bag.",
       });
     },
-    onError: () => {
+    onError: (error) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/products"] });
       toast({
         title: "Error",
-        description: "Failed to add item to cart. Please try again.",
+        description: error.message.startsWith("409:")
+          ? "This product is no longer available in the requested quantity."
+          : "Failed to add item to cart. Please try again.",
         variant: "destructive",
       });
     },
