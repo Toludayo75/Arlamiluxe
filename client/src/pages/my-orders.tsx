@@ -11,7 +11,7 @@ import { format } from "date-fns";
 export default function MyOrders() {
   const { user } = useAuth();
   
-  const { data: orders, isLoading } = useQuery<Order[]>({
+  const { data: orders, isLoading, isError, refetch } = useQuery<Order[]>({
     queryKey: ["/api/orders"],
     enabled: !!user,
   });
@@ -40,6 +40,21 @@ export default function MyOrders() {
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">Loading your orders...</p>
         </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center px-4 text-center">
+        <Package className="w-16 h-16 text-muted-foreground mb-4" />
+        <h2 className="text-2xl font-semibold mb-2">We couldn’t load your orders</h2>
+        <p className="text-muted-foreground mb-6">
+          Please check your connection and try again.
+        </p>
+        <Button onClick={() => refetch()} data-testid="button-retry-orders">
+          Try Again
+        </Button>
       </div>
     );
   }

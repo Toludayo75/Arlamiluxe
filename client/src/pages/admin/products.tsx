@@ -141,6 +141,7 @@ export default function AdminProducts() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/products"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/products"] });
       setIsAddDialogOpen(false);
       form.reset();
       setPreviewUrl(null);
@@ -164,6 +165,7 @@ export default function AdminProducts() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/products"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/products"] });
       setEditingProduct(null);
       form.reset();
       setPreviewUrl(null);
@@ -187,6 +189,7 @@ export default function AdminProducts() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/products"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/products"] });
       toast({
         title: "Success",
         description: "Product deleted successfully",

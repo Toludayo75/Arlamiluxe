@@ -20,15 +20,30 @@ export default function CheckoutPage() {
   const [shippingAddress, setShippingAddress] = useState("");
   const [shippingPhone, setShippingPhone] = useState("");
 
-  const { data: cartItems } = useQuery<CartItem[]>({
+  const {
+    data: cartItems,
+    isLoading: cartLoading,
+    isError: cartError,
+    refetch: refetchCart,
+  } = useQuery<CartItem[]>({
     queryKey: ["/api/cart"],
   });
 
-  const { data: products } = useQuery<Product[]>({
+  const {
+    data: products,
+    isLoading: productsLoading,
+    isError: productsError,
+    refetch: refetchProducts,
+  } = useQuery<Product[]>({
     queryKey: ["/api/products"],
   });
 
-  const { data: shippingRates } = useQuery<ShippingRate[]>({
+  const {
+    data: shippingRates,
+    isLoading: shippingRatesLoading,
+    isError: shippingRatesError,
+    refetch: refetchShippingRates,
+  } = useQuery<ShippingRate[]>({
     queryKey: ["/api/shipping-rates"],
   });
 
@@ -100,6 +115,33 @@ export default function CheckoutPage() {
     return <Redirect to="/auth" />;
   }
 
+  const retryCheckoutData = () => {
+    void Promise.all([refetchCart(), refetchProducts(), refetchShippingRates()]);
+  };
+
+  if (cartLoading || productsLoading || shippingRatesLoading) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center px-4">
+        <p className="text-muted-foreground">Loading your checkout...</p>
+      </div>
+    );
+  }
+
+  if (cartError || productsError || shippingRatesError) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center px-4 text-center">
+        <ShoppingBag className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+        <h2 className="text-2xl font-semibold mb-2">We couldn’t load checkout</h2>
+        <p className="text-muted-foreground mb-6">
+          Check your connection and try again. Your cart has not been changed.
+        </p>
+        <Button onClick={retryCheckoutData} data-testid="button-retry-checkout">
+          Try Again
+        </Button>
+      </div>
+    );
+  }
+
   if (cartWithProducts.length === 0) {
     return (
       <div className="min-h-screen">
@@ -115,6 +157,21 @@ export default function CheckoutPage() {
             </CardContent>
           </Card>
         </div>
+      </div>
+    );
+  }
+
+  if (cartWithProducts.some((item) => !item.product)) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center px-4 text-center">
+        <ShoppingBag className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+        <h2 className="text-2xl font-semibold mb-2">A cart item is no longer available</h2>
+        <p className="text-muted-foreground mb-6">
+          Review your cart and remove unavailable products before checking out.
+        </p>
+        <Button onClick={() => setLocation("/cart")} data-testid="button-review-cart">
+          Review Cart
+        </Button>
       </div>
     );
   }
@@ -255,7 +312,7 @@ export default function CheckoutPage() {
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Subtotal</span>
-                    <span>₦{total.toLocaleString()}</span>
+                    <span>₦{subtotal.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Shipping</span>

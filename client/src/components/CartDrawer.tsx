@@ -27,13 +27,18 @@ export default function CartDrawer() {
   const { toast } = useToast();
   const { user } = useAuth();
 
-  const { data: cartItems } = useQuery<CartItem[]>({
+  const cartQuery = useQuery<CartItem[]>({
     queryKey: ["/api/cart"],
   });
 
-  const { data: products } = useQuery<Product[]>({
+  const productsQuery = useQuery<Product[]>({
     queryKey: ["/api/products"],
   });
+
+  const cartItems = cartQuery.data;
+  const products = productsQuery.data;
+  const isLoading = cartQuery.isLoading || productsQuery.isLoading;
+  const hasQueryError = cartQuery.isError || productsQuery.isError;
 
   const cartWithProducts: CartItemWithProduct[] =
     cartItems?.map((item) => ({
@@ -117,7 +122,11 @@ export default function CartDrawer() {
         <SheetHeader>
           <SheetTitle data-testid="text-cart-title">Shopping Cart</SheetTitle>
           <SheetDescription>
-            {cartCount === 0
+            {isLoading
+              ? "Loading your cart..."
+              : hasQueryError
+                ? "Unable to load your cart"
+                : cartCount === 0
               ? "Your cart is empty"
               : `${cartCount} ${cartCount === 1 ? "item" : "items"} in your cart`}
           </SheetDescription>
@@ -126,7 +135,27 @@ export default function CartDrawer() {
         <Separator className="my-4" />
 
         <ScrollArea className="flex-1 -mx-6 px-6">
-          {cartWithProducts.length === 0 ? (
+          {isLoading ? (
+            <div className="py-16 text-center text-muted-foreground" role="status">
+              Loading your cart...
+            </div>
+          ) : hasQueryError ? (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <p className="text-muted-foreground">
+                We couldn’t load your cart. Please try again.
+              </p>
+              <Button
+                variant="outline"
+                className="mt-4"
+                onClick={() => {
+                  void Promise.all([cartQuery.refetch(), productsQuery.refetch()]);
+                }}
+                data-testid="button-retry-cart"
+              >
+                Try Again
+              </Button>
+            </div>
+          ) : cartWithProducts.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
               <ShoppingBag className="h-16 w-16 text-muted-foreground mb-4" />
               <p className="text-muted-foreground">Your cart is empty</p>
