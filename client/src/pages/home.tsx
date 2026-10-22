@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Product, Collection } from "@shared/schema";
 import { resolveAssetUrl } from "@/lib/queryClient";
-import heroImage from '../assets/generated_images/Adire_hero_background_fabric_34499d84.png';
+import heroImage from '../assets/generated_images/Adire_hero_background_fabric_34499d84.jpg';
 
 export default function Home() {
   const { data: collections, isLoading: collectionsLoading, isError: collectionsError } = useQuery<Collection[]>({
@@ -154,6 +154,7 @@ export default function Home() {
                           src={resolveAssetUrl(product.imageUrl)}
                           alt={product.name}
                           className="w-full h-full object-cover"
+                          loading="lazy"
                           data-testid={`img-product-${product.id}`}
                         />
                       ) : (

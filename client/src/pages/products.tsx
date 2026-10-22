@@ -22,7 +22,9 @@ import {
 export default function Products() {
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCollection, setSelectedCollection] = useState<string>("all");
+  const [selectedCollection, setSelectedCollection] = useState(
+    () => new URLSearchParams(window.location.search).get("collection") || "all",
+  );
 
   const { data: collections, isLoading: collectionsLoading } = useQuery<Collection[]>({
     queryKey: ["/api/collections"],
@@ -219,6 +221,7 @@ export default function Products() {
                           src={resolveAssetUrl(product.imageUrl)}
                           alt={product.name}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover/card:scale-105"
+                          loading="lazy"
                           data-testid={`img-product-${product.id}`}
                         />
                       ) : (
@@ -228,7 +231,7 @@ export default function Products() {
                       )}
 
                       {product.inStock > 0 && (
-                        <div className="absolute bottom-3 right-3 opacity-0 group-hover/card:opacity-100 transition-opacity">
+                        <div className="absolute bottom-3 right-3 opacity-100 md:opacity-0 md:group-hover/card:opacity-100 md:group-focus-within/card:opacity-100 transition-opacity">
                           <Button
                             size="icon"
                             variant="secondary"

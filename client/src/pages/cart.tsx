@@ -13,14 +13,16 @@ type CartItemWithProduct = CartItem & { product?: Product };
 export default function Cart() {
   const { toast } = useToast();
 
-  const { data: cartItems, isLoading, isError } = useQuery<CartItem[]>({
+  const cartQuery = useQuery<CartItem[]>({
     queryKey: ["/api/cart"],
   });
 
-  const { data: products } = useQuery<Product[]>({
+  const productsQuery = useQuery<Product[]>({
     queryKey: ["/api/products"],
   });
 
+  const cartItems = cartQuery.data;
+  const products = productsQuery.data;
   const updateQuantityMutation = useMutation({
     mutationFn: async ({ id, quantity }: { id: string; quantity: number }) => {
       return await apiRequest("PATCH", `/api/cart/${id}`, { quantity });
@@ -92,7 +94,7 @@ export default function Cart() {
     0
   );
 
-  if (isLoading) {
+  if (cartQuery.isLoading) {
     return (
       <div className="min-h-screen">
         <div className="container mx-auto max-w-6xl px-6 py-12">
@@ -129,17 +131,73 @@ export default function Cart() {
     );
   }
 
-  if (isError) {
+  if (cartQuery.isError) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-4xl font-serif mb-4">Error Loading Cart</h1>
           <p className="text-muted-foreground mb-6">
-            Failed to load your cart. Please try again later.
+            Failed to load your cart. Please check your connection and try again.
           </p>
-          <Link href="/">
-            <Button data-testid="button-back-home">Back to Home</Button>
-          </Link>
+          <Button
+            onClick={() => cartQuery.refetch()}
+            data-testid="button-retry-cart-page"
+          >
+            Try Again
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (productsQuery.isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <p className="text-muted-foreground">Loading product details...</p>
+      </div>
+    );
+  }
+
+  if (productsQuery.isError) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center px-4 text-center">
+        <h1 className="text-3xl font-serif mb-4">Unable to load product details</h1>
+        <p className="text-muted-foreground mb-6">
+          Your cart is safe. Please try loading product details again.
+        </p>
+        <Button onClick={() => productsQuery.refetch()} data-testid="button-retry-cart-products">
+          Try Again
+        </Button>
+      </div>
+    );
+  }
+
+  const unavailableItems = cartWithProducts.filter((item) => !item.product);
+  if (unavailableItems.length > 0) {
+    return (
+      <div className="min-h-screen">
+        <div className="container mx-auto max-w-3xl px-4 py-12">
+          <h1 className="text-3xl font-serif mb-4">Review your cart</h1>
+          <p className="text-muted-foreground mb-6">
+            Some items are no longer available. Remove them to continue.
+          </p>
+          <div className="space-y-4">
+            {unavailableItems.map((item) => (
+              <Card key={item.id}>
+                <CardContent className="flex flex-wrap items-center justify-between gap-4 p-6">
+                  <span>Unavailable product</span>
+                  <Button
+                    variant="outline"
+                    onClick={() => removeItemMutation.mutate(item.id)}
+                    disabled={removeItemMutation.isPending}
+                    data-testid={`button-remove-unavailable-${item.id}`}
+                  >
+                    Remove from cart
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </div>
     );

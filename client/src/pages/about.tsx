@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
-import artisanImage from '@assets/generated_images/Artisan_crafting_Adire_82a669bb.png';
-import adireImage from '@assets/generated_images/Adire_collection_card_image_d89cfc1f.png';
+import artisanImage from '@assets/generated_images/Artisan_crafting_Adire_82a669bb.jpg';
+import adireImage from '@assets/generated_images/Adire_collection_card_image_d89cfc1f.jpg';
 
 export default function About() {
   return (
@@ -45,6 +45,7 @@ export default function About() {
               src={adireImage}
               alt="Adire fabric craftsmanship"
               className="w-full h-full object-cover rounded-xl"
+              loading="lazy"
             />
           </div>
         </div>
@@ -61,6 +62,7 @@ export default function About() {
                 src={artisanImage}
                 alt="Artisan creating Adire fabric"
                 className="w-full h-full object-cover rounded-xl"
+                loading="lazy"
               />
             </div>
             <div className="order-1 lg:order-2">

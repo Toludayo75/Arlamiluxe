@@ -90,7 +90,7 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-semibold mb-1">Email</h3>
                     <a 
-                      href="mailto:info@arlamiluxe.com" 
+                      href="mailto:arlamiluxe@gmail.com"
                       className="text-muted-foreground hover:text-primary"
                       data-testid="link-email"
                     >
@@ -106,7 +106,7 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-semibold mb-1">Phone</h3>
                     <a 
-                      href="tel:+2348012345678" 
+                      href="tel:+2347060826028"
                       className="text-muted-foreground hover:text-primary"
                       data-testid="link-phone"
                     >
