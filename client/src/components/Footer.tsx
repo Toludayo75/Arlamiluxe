@@ -1,22 +1,11 @@
 import { Link } from "wouter";
 import { Facebook, Instagram, Twitter } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useState } from "react";
 
 export default function Footer() {
-  const [email, setEmail] = useState("");
-
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Newsletter signup:', email);
-    setEmail("");
-  };
-
   return (
     <footer className="bg-secondary text-secondary-foreground">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           <div>
             <h3 className="font-serif text-lg font-semibold mb-4">About Arlamiluxe</h3>
             <p className="text-sm leading-relaxed">
@@ -28,13 +17,8 @@ export default function Footer() {
             <h3 className="font-serif text-lg font-semibold mb-4">Collections</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/products"                 className="hover:text-brand-accent hover:underline" data-testid="link-footer-products">
+                <Link href="/products" className="hover:text-brand-accent hover:underline" data-testid="link-footer-products">
                   All Products
-                </Link>
-              </li>
-              <li>
-                <Link href="/products" className="hover:text-brand-accent hover:underline" data-testid="link-footer-fabrics">
-                  Premium Fabrics
                 </Link>
               </li>
             </ul>
@@ -55,66 +39,42 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-
-          <div>
-            <h3 className="font-serif text-lg font-semibold mb-4">Newsletter</h3>
-            <form onSubmit={handleNewsletterSubmit} className="space-y-2">
-              <Input
-                type="email"
-                placeholder="Your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="bg-background border-border text-foreground placeholder:text-muted-foreground"
-                data-testid="input-newsletter-email"
-              />
-              <Button
-                type="submit"
-                className="w-full"
-                data-testid="button-newsletter-submit"
-              >
-                Subscribe
-              </Button>
-            </form>
-          </div>
         </div>
 
         <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-muted-foreground">
-            © 2025 Arlamiluxe. All rights reserved.
+            © {new Date().getFullYear()} Arlamiluxe. All rights reserved.
           </p>
           <div className="flex gap-4">
-            <a 
-              href="https://facebook.com/arlamiluxe" 
-              target="_blank" 
+            <a
+              href="https://facebook.com/arlamiluxe"
+              target="_blank"
               rel="noopener noreferrer"
-              className="hover:opacity-80 transition-opacity"
+              aria-label="Visit Arlamiluxe on Facebook"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-transparent hover:text-brand-accent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
               data-testid="link-social-facebook"
             >
-              <Button size="icon" variant="ghost" className="hover:text-brand-accent">
-                <Facebook className="w-5 h-5" />
-              </Button>
+              <Facebook className="h-5 w-5" aria-hidden="true" />
             </a>
-            <a 
-              href="https://instagram.com/arlami_luxe" 
-              target="_blank" 
+            <a
+              href="https://instagram.com/arlami_luxe"
+              target="_blank"
               rel="noopener noreferrer"
-              className="hover:opacity-80 transition-opacity"
+              aria-label="Visit Arlamiluxe on Instagram"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-transparent hover:text-brand-accent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
               data-testid="link-social-instagram"
             >
-              <Button size="icon" variant="ghost" className="hover:text-brand-accent">
-                <Instagram className="w-5 h-5" />
-              </Button>
+              <Instagram className="h-5 w-5" aria-hidden="true" />
             </a>
-            <a 
-              href="https://twitter.com/arlamiluxe" 
-              target="_blank" 
+            <a
+              href="https://twitter.com/arlamiluxe"
+              target="_blank"
               rel="noopener noreferrer"
-              className="hover:opacity-80 transition-opacity"
+              aria-label="Visit Arlamiluxe on Twitter"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-transparent hover:text-brand-accent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
               data-testid="link-social-twitter"
             >
-              <Button size="icon" variant="ghost" className="hover:text-brand-accent">
-                <Twitter className="w-5 h-5" />
-              </Button>
+              <Twitter className="h-5 w-5" aria-hidden="true" />
             </a>
           </div>
         </div>
