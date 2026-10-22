@@ -24,11 +24,26 @@ const frontendOrigins = new Set(
     .map((url) => url.trim().replace(/\/$/, ""))
     .filter(Boolean)
 );
+const unsafeMethods = new Set(["POST", "PUT", "PATCH", "DELETE"]);
+const sessionRoutes = new Set(["/api/login", "/api/register", "/api/logout"]);
 
 app.use((req, res, next) => {
   const origin = req.get("Origin");
+  const isAllowedOrigin = origin !== undefined && frontendOrigins.has(origin);
+  const isUnsafeMethod = unsafeMethods.has(req.method);
 
-  if (origin && frontendOrigins.has(origin)) {
+  if (
+    isUnsafeMethod &&
+    ((origin !== undefined && !isAllowedOrigin) ||
+      req.get("Sec-Fetch-Site") === "cross-site" ||
+      (process.env.NODE_ENV === "production" &&
+        sessionRoutes.has(req.path) &&
+        !isAllowedOrigin))
+  ) {
+    return res.status(403).json({ error: "Request origin is not allowed" });
+  }
+
+  if (isAllowedOrigin) {
     res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Access-Control-Allow-Credentials", "true");
     res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");

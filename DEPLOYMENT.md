@@ -62,7 +62,10 @@ Do not commit production credentials or expose them in Netlify.
 ## Cookies and custom domains
 
 The API enables credentialed CORS for the exact origins in `FRONTEND_URL` and
-uses secure cross-site session cookies in production. For best browser
+rejects cross-origin state-changing requests. In production, login, registration,
+and logout also require an allowed `Origin`. Inquiry records are only available
+to authenticated administrators. The API uses secure cross-site session cookies
+in production. For best browser
 compatibility, use custom domains on the same site (for example,
 `www.arlamiluxe.com` for Netlify and `api.arlamiluxe.com` for Render) rather
 than relying on third-party cookies between the default `netlify.app` and

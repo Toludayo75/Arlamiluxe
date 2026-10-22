@@ -268,7 +268,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/inquiries", async (req, res) => {
+  app.get("/api/inquiries", requireAdmin, async (req, res) => {
     try {
       const inquiries = await storage.getInquiries();
       res.json(inquiries);
@@ -277,7 +277,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/inquiries/:id", async (req, res) => {
+  app.get("/api/inquiries/:id", requireAdmin, async (req, res) => {
     try {
       const inquiry = await storage.getInquiry(req.params.id);
       if (!inquiry) {
