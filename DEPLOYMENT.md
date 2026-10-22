@@ -53,7 +53,10 @@ database URL or Paystack secret in a `VITE_*` variable.
 The API expects the existing PostgreSQL schema. If deploying to a new database,
 set `DATABASE_URL` on Render and run `npm run db:push` from a trusted local
 environment configured with that database URL. To add the initial admin user,
-configure the required seed environment values and run `npm run seed-admin`.
+set `ADMIN_EMAIL` and a unique `ADMIN_PASSWORD` of at least 12 characters in
+your trusted local environment, then run `npm run seed-admin`. The script has no
+default admin password. Public registration always creates customer accounts;
+never try to assign an admin role through the registration form or API.
 Do not commit production credentials or expose them in Netlify.
 
 ## Cookies and custom domains

@@ -6,6 +6,7 @@ import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
 import { storage } from "./storage.js";
 import { User as SelectUser } from "../shared/schema.js";
+import { z } from "zod";
 
 declare global {
   namespace Express {
@@ -14,6 +15,10 @@ declare global {
 }
 
 const scryptAsync = promisify(scrypt);
+const registrationSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+});
 
 async function hashPassword(password: string) {
   const salt = randomBytes(16).toString("hex");
@@ -59,14 +64,21 @@ export function setupAuth(app: Express) {
 
   app.post("/api/register", async (req, res, next) => {
     try {
-      const existingUser = await storage.getUserByEmail(req.body.email);
+      const validation = registrationSchema.safeParse(req.body);
+      if (!validation.success) {
+        return res.status(400).json({ message: "Invalid registration details" });
+      }
+
+      const { email, password } = validation.data;
+      const existingUser = await storage.getUserByEmail(email);
       if (existingUser) {
         return res.status(400).json({ message: "Email already exists" });
       }
 
       const user = await storage.createUser({
-        ...req.body,
-        password: await hashPassword(req.body.password),
+        email,
+        password: await hashPassword(password),
+        role: "customer",
       });
 
       const sessionId = req.sessionID;

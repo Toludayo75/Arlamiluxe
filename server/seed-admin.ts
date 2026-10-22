@@ -1,11 +1,16 @@
-import "dotenv/config"; 
-import { db } from "./db.js";
+import "dotenv/config";
+import { db, pool } from "./db.js";
 import { users } from "../shared/schema.js";
 import { eq } from "drizzle-orm";
-import { scrypt, randomBytes, timingSafeEqual } from "crypto";
+import { scrypt, randomBytes } from "crypto";
 import { promisify } from "util";
+import { z } from "zod";
 
 const scryptAsync = promisify(scrypt);
+const adminCredentialsSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(12),
+});
 
 async function hashPassword(password: string) {
   const salt = randomBytes(16).toString("hex");
@@ -15,9 +20,19 @@ async function hashPassword(password: string) {
 
 async function seedAdmin() {
   try {
-    const adminEmail = "admin@arlamiluxefabrics.com";
-    const adminPassword = "#Arlamiluxeadmin";
+    const validation = adminCredentialsSchema.safeParse({
+      email: process.env.ADMIN_EMAIL,
+      password: process.env.ADMIN_PASSWORD,
+    });
+    if (!validation.success) {
+      console.error(
+        "Set a valid ADMIN_EMAIL and an ADMIN_PASSWORD of at least 12 characters before running seed-admin.",
+      );
+      process.exitCode = 1;
+      return;
+    }
 
+    const { email: adminEmail, password: adminPassword } = validation.data;
     const [existingAdmin] = await db
       .select()
       .from(users)
@@ -39,8 +54,11 @@ async function seedAdmin() {
     console.log("Admin user created successfully!");
     console.log(`Email: ${adminEmail}`);
     console.log("Password: [HIDDEN]");
-  } catch (error) {
-    console.error("Error seeding admin:", error);
+  } catch {
+    console.error("Admin seeding failed. Check the database connection and try again.");
+    process.exitCode = 1;
+  } finally {
+    await pool.end();
   }
 }
 
