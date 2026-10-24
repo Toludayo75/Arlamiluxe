@@ -140,15 +140,15 @@ export default function Home() {
             <p className="text-muted-foreground">Failed to load products. Please try again later.</p>
           </div>
         ) : featuredProducts.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-6">
             {featuredProducts.map((product) => (
               <Link key={product.id} href={`/products/${product.id}`}>
                 <Card
                   data-testid={`card-product-${product.id}`}
-                  className="h-full hover-elevate active-elevate-2 transition-all cursor-pointer"
+                  className="h-full overflow-hidden hover-elevate active-elevate-2 transition-all cursor-pointer"
                 >
                   <CardHeader className="p-0">
-                    <div className="aspect-[4/3] overflow-hidden rounded-t-xl bg-muted">
+                    <div className="aspect-[4/3] overflow-hidden bg-muted">
                       {product.imageUrl ? (
                         <img
                           src={resolveAssetUrl(product.imageUrl)}
@@ -164,35 +164,35 @@ export default function Home() {
                       )}
                     </div>
                   </CardHeader>
-                  <CardContent className="p-6">
+                  <CardContent className="p-3 md:p-5">
                     <h3
-                      className="text-xl font-serif mb-2"
+                      className="text-sm font-serif leading-snug mb-1 line-clamp-2 sm:text-base md:text-xl md:mb-2"
                       data-testid={`text-product-name-${product.id}`}
                     >
                       {product.name}
                     </h3>
                     {product.description && (
                       <p
-                        className="text-sm text-muted-foreground line-clamp-2"
+                        className="hidden text-sm text-muted-foreground line-clamp-2 sm:block"
                         data-testid={`text-product-description-${product.id}`}
                       >
                         {product.description}
                       </p>
                     )}
                   </CardContent>
-                  <CardFooter className="p-6 pt-0 flex flex-wrap justify-between items-center gap-2">
+                  <CardFooter className="p-3 pt-0 flex flex-wrap justify-between items-center gap-1.5 md:p-5 md:pt-0 md:gap-2">
                     <span
-                      className="text-2xl font-serif text-primary"
+                      className="text-base font-serif text-primary sm:text-lg md:text-2xl"
                       data-testid={`text-product-price-${product.id}`}
                     >
                       ₦{product.price.toLocaleString()}
                     </span>
                     {product.inStock > 0 ? (
-                      <Badge variant="secondary" data-testid={`badge-in-stock-${product.id}`}>
+                      <Badge variant="secondary" className="px-1.5 py-0 text-[10px] sm:px-2 sm:py-0.5 sm:text-xs" data-testid={`badge-in-stock-${product.id}`}>
                         In Stock
                       </Badge>
                     ) : (
-                      <Badge variant="outline" data-testid={`badge-out-of-stock-${product.id}`}>
+                      <Badge variant="outline" className="px-1.5 py-0 text-[10px] sm:px-2 sm:py-0.5 sm:text-xs" data-testid={`badge-out-of-stock-${product.id}`}>
                         Out of Stock
                       </Badge>
                     )}
