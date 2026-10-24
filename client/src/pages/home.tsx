@@ -20,7 +20,7 @@ export default function Home() {
     queryKey: ["/api/products"],
   });
 
-  const featuredProducts = products?.filter((product) => product.inStock > 0).slice(0, 3) ?? [];
+  const featuredProducts = products?.filter((product) => product.inStock > 0).slice(0, 4) ?? [];
 
   // Generate structured data for collections and products
   const generateStructuredData = () => {
@@ -122,14 +122,14 @@ export default function Home() {
           </p>
         </div>
         {productsLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Array.from({ length: 3 }).map((_, i) => (
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-2 md:gap-6 lg:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, i) => (
               <Card key={i}>
                 <CardHeader className="p-0">
-                  <Skeleton className="h-64 w-full rounded-t-xl" />
+                  <Skeleton className="aspect-[4/3] w-full rounded-t-xl" />
                 </CardHeader>
-                <CardContent className="p-6">
-                  <Skeleton className="h-6 w-3/4 mb-2" />
+                <CardContent className="p-3 md:p-5">
+                  <Skeleton className="h-5 w-3/4 mb-2 md:h-6" />
                   <Skeleton className="h-4 w-1/2" />
                 </CardContent>
               </Card>
@@ -140,7 +140,7 @@ export default function Home() {
             <p className="text-muted-foreground">Failed to load products. Please try again later.</p>
           </div>
         ) : featuredProducts.length > 0 ? (
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-6">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-2 md:gap-6 lg:grid-cols-4">
             {featuredProducts.map((product) => (
               <Link key={product.id} href={`/products/${product.id}`}>
                 <Card
